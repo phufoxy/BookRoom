@@ -71,7 +71,11 @@ export function receiveData(action, payload) {
 
 //Edit
 export function requestEditRoom(data){
+<<<<<<< HEAD
     let formData = new FormData();
+=======
+    let formData = new formData();
+>>>>>>> First Commit
     formData.append('name',data.name);
     formData.append('type',data.type);
     return (dispatch)=>{

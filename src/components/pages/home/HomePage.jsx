@@ -57,4 +57,4 @@ function mapStateProps(state) {
         fetched: state.event.fetched
     }
 }
-export default connect(mapStateProps, { requestGetEvent, requestAddEvents, requestDeleteEvent })(HomePage);
+export default connect(mapStateProps, null)(HomePage);

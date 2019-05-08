@@ -73,8 +73,20 @@ export function receiveData(action, payload) {
 }
 
 //Edit
+<<<<<<< HEAD
 export function requestEditRoom(data) {
     return (dispatch) => {
+=======
+export function requestEditRoom(data){
+<<<<<<< HEAD
+    let formData = new FormData();
+=======
+    let formData = new formData();
+>>>>>>> First Commit
+    formData.append('name',data.name);
+    formData.append('type',data.type);
+    return (dispatch)=>{
+>>>>>>> First Commit
         return axios.request({
             method: 'PUT',
             url: `${API_URL}/rooms/${data.id}?name=${data.name}&type=${data.type}`,

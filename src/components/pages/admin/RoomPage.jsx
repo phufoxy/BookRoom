@@ -50,8 +50,8 @@ class RoomPage extends Component {
         })
     }
     render() {
-        
-        
+
+
         const mainContent = () => {
             switch (this.state.views) {
                 case "LIST":
@@ -60,7 +60,7 @@ class RoomPage extends Component {
                     )
                 case "FORM":
                     return (
-                        <FormComponent choice="ROOM" dataEdit={this.state.dataEdit}  onUpdate={this.onUpdate.bind(this)} edit={this.state.edit} onAdd={this.onAdd} ></FormComponent>
+                        <FormComponent choice="ROOM" dataEdit={this.state.dataEdit} onUpdate={this.onUpdate.bind(this)} edit={this.state.edit} onAdd={this.onAdd} ></FormComponent>
                     )
                 default:
                     return (

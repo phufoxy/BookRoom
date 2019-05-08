@@ -25,6 +25,7 @@ dateFormat.i18n = {
     ]
 };
 class FullcalenderComponent extends Component {
+    calendarComponentRef = React.createRef()
     constructor(props) {
         super(props);
         this.state = {
@@ -38,11 +39,9 @@ class FullcalenderComponent extends Component {
         }
     }
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.is_checkdate !== this.props.is_checkdate) {
-            this.setState({
-                datenow: this.props.datecalender
-            })
-
+        if (prevProps.datecalender !== this.props.datecalender) {
+            let calendarApi = this.calendarComponentRef.current.getApi()
+            calendarApi.gotoDate(dateFormat(this.props.datecalender, 'yyyy-mm-dd'))
         }
     }
     toggleWeekends = () => {
@@ -51,29 +50,22 @@ class FullcalenderComponent extends Component {
         })
     }
 
-    gotoPast = () => {
-        let calendarApi = this.calendarComponentRef.current.getApi()
-        calendarApi.gotoDate('2000-01-01') // call a method on the Calendar object
-    }
     onEvent(info) {
         this.setState({
             show: true,
             title: info.event.title,
-            // description: info.event.extendedProps.description,
             datestart: dateFormat(info.event.start, "dddd ,  dd mmmm yyyy"),
             timestart: info.event.extendedProps.timestart,
             timeend: info.event.extendedProps.timeend,
             room: info.event.extendedProps.room,
             user: info.event.extendedProps.user,
-            id: info.event.id
+            id: info.event.id,
+            redate: info.event.extendedProps.redate,
+            recount: info.event.extendedProps.recount,
+            reweek: info.event.extendedProps.reweek
         })
 
     }
-    // onHover = (info) => {
-    //     console.log(info.event.id);
-
-    // }
-
 
     handleClose = () => {
         this.setState({ show: false });
@@ -104,6 +96,44 @@ class FullcalenderComponent extends Component {
             show: !this.state.show
         })
     }
+    onEdit(id) {
+        var self = this.props;
+        confirm({
+            title: 'Bạn Muốn Sửa Sự Kiện?',
+            content: 'Bạn Có Chắc Chắn',
+            onOk() {
+                self.onEdit(id);
+            },
+            onCancel() {
+            },
+        });
+        this.setState({
+            show: !this.state.show
+        })
+    }
+    handleDrop = (eventObj, date) => {
+        console.group('onDrop');
+        console.log('date');
+        console.dir(date);
+        console.groupEnd();
+    }
+    onResize = (info) => {
+        let data = {
+            id: info.event.id,
+            timeEnd: dateFormat(info.event.end, 'HH:ss'),
+            is_resize: true
+        }
+        this.props.onUpdate(data);
+    }
+    oneventDrop = (eventDropInfo) => {
+        let data = {
+            id: eventDropInfo.event.id,
+            daystart: dateFormat(eventDropInfo.event.start, 'yyyy-mm-dd'),
+            is_resize: true,
+            is_drop: true
+        }
+        this.props.onUpdate(data);
+    }
     render() {
         return (
             <div className="b-fullcalender">
@@ -117,7 +147,7 @@ class FullcalenderComponent extends Component {
                     <div className="b-events">
                         <div className="b-button-funtion">
                             <div className="b-item">
-                                <button className="b-btn">
+                                <button className="b-btn" onClick={this.onEdit.bind(this, this.state.id)}>
                                     <i className="fas fa-pencil-alt" />
                                 </button>
                             </div>
@@ -128,7 +158,7 @@ class FullcalenderComponent extends Component {
                             </div>
                             <div className="b-item">
                                 <button className="b-btn">
-                                    <i className="fas fa-ellipsis-v" />
+                                    <i className="fas fa-ellipsis-v"></i>
                                 </button>
                             </div>
                         </div>
@@ -144,7 +174,15 @@ class FullcalenderComponent extends Component {
                             </span>
                             <p className="b-text-user">
                                 {this.state.user}
-                                {this.state.id}
+                            </p>
+                            <p className={this.state.redate !== 'Không Lặp' ? "b-text-user" : ''}>
+                                {this.state.redate === 'daily' ? 'Lặp Theo Ngày' : ''}
+                                {this.state.redate === 'weekly' ? 'Lặp Theo Tuần' : ''}
+                                {this.state.redate === 'monthly' ? 'Lặp Theo Tháng' : ''}
+                                {this.state.redate === 'yearly' ? 'Lặp Theo Năm' : ''}
+                            </p>
+                            <p>
+                                {this.state.recount ? `${this.state.recount + '  lần lặp lại'}` : ''}
                             </p>
                         </div>
                     </div>
@@ -152,37 +190,45 @@ class FullcalenderComponent extends Component {
                 </Modal>
                 <FullCalendar
                     defaultView="timeGridWeek"
-
                     header={{
                         right: 'prev,next today',
                         center: 'title',
                         left: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
                     }}
-                    listDayFormat={true}
+                    listDayFormat
                     height={'parent'}
                     timeZone={'local'}
                     contentHeight={600}
                     aspectRatio={22}
-                    handleWindowResize={true}
+                    handleWindowResize
                     allDayText={'Giờ'}
-                    allDaySlot={true}
+                    allDaySlot
                     dayNames={['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']}
                     plugins={[rrulePlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
                     ref={this.calendarComponentRef}
                     weekends={this.state.calendarWeekends}
                     events={this.props.data}
                     defaultDate={dateFormat(this.state.datenow, 'yyyy-mm-dd')}
-                    navLinks={true}
-                    editable={true}
-                    eventLimit={true}
-                    minTime={'07:00:00'}
-                    maxTime={'19:00:00'}
+                    navLinks
+                    editable
+                    eventLimit
+                    viewObject={{
+                        currentStart: '2019-05-07'
+                    }}
+                    minTime={'07:30:00'}
+                    maxTime={'19:30:00'}
                     eventClick={this.onEvent.bind(this)}
                     locales={allLocales}
                     locale={'vi'}
                     eventOverlap={function (stillEvent, movingEvent) {
                         return stillEvent.allDay && movingEvent.allDay;
                     }}
+                    eventResize={
+                        this.onResize
+                    }
+                    eventDrop={
+                        this.oneventDrop
+                    }
                 />
             </div>
         );

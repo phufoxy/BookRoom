@@ -11,10 +11,7 @@
     "@fullcalendar/timegrid": "^4.0.1",
     "antd": "^3.16.5",
     "axios": "^0.18.0",
-<<<<<<< HEAD
     "dateformat": "^3.0.3",
-=======
->>>>>>> First Commit
     "fullcalendar-reactwrapper": "^1.0.7",
     "history": "^4.9.0",
     "moment": "^2.24.0",

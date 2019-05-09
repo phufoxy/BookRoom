@@ -8,13 +8,9 @@ class CalenderComponent extends Component {
             date: new Date()
         }
     }
-<<<<<<< HEAD
     onChange = (date) => { 
         this.props.onGetDate(date)
      }
-=======
-    onChange = date => this.setState({ date })
->>>>>>> First Commit
     render() {
         return (
             <div className="b-calender">

@@ -120,7 +120,7 @@ class FullcalenderComponent extends Component {
     onResize = (info) => {
         let data = {
             id: info.event.id,
-            timeEnd: dateFormat(info.event.end, 'HH:ss'),
+            timeEnd: dateFormat(info.event.end, 'HH:MM'),
             is_resize: true
         }
         this.props.onUpdate(data);
@@ -129,6 +129,8 @@ class FullcalenderComponent extends Component {
         let data = {
             id: eventDropInfo.event.id,
             daystart: dateFormat(eventDropInfo.event.start, 'yyyy-mm-dd'),
+            timestart: dateFormat(eventDropInfo.event.start, 'HH:MM'),
+            timeend: dateFormat(eventDropInfo.event.end, 'HH:MM'),
             is_resize: true,
             is_drop: true
         }

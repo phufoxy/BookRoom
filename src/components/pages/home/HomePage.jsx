@@ -15,6 +15,7 @@ class HomePage extends Component {
             datecalender: '',
             edit: false,
             dataEdit: {},
+            is_edit: false
         }
     }
     componentDidMount() {
@@ -47,6 +48,11 @@ class HomePage extends Component {
     }
     onUpdate = (data) => {
         this.props.dispatch(action.requestUpdateEvent(data));
+        this.setState({
+            edit: false
+        })
+    }
+    onCancleEdit = () => {
         this.setState({
             edit: false
         })
@@ -108,9 +114,9 @@ class HomePage extends Component {
                 <HeaderLayout></HeaderLayout>
                 <main className="b-page-main">
                     <div className="b-block">
-                        <SlideBar onChangerRoom={this.onChangerRoom} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>
+                        <SlideBar onCancleEdit={this.onCancleEdit} onChangerRoom={this.onChangerRoom} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>
                         <div className="b-block-right">
-                            <FullcalenderComponent onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
+                            <FullcalenderComponent onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
                         </div>
                     </div>
                 </main>

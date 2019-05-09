@@ -90,6 +90,7 @@ class FullcalenderComponent extends Component {
                 self.onDelete(id);
             },
             onCancel() {
+                self.onCancleEdit();
             },
         });
         this.setState({

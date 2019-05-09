@@ -1,21 +1,16 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { HeaderLayout, SiderLayout,FooterLayout } from '../../layouts/admin';
-import { TableComponent,FormComponent } from '../../shared/admin';
-import {requestGetBookRoom,requestDeleteBookRoom,requestAddBookRoom} from '../../../actions/bookroom';
-import {requestGetRoom} from '../../../actions/room';
+// import { connect } from 'react-redux';
+import { HeaderLayout, SiderLayout, FooterLayout } from '../../layouts/admin';
+import { TableComponent, FormComponent } from '../../shared/admin';
+
 class BookRoomPage extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             views: 'LIST'
         }
     }
-    componentDidMount(){
-        this.props.requestGetBookRoom();
-        this.props.requestGetRoom();
-    }
-    onChangerView = () =>{
+    onChangerView = () => {
         this.setState({
             views: 'FORM'
         })
@@ -31,19 +26,17 @@ class BookRoomPage extends Component {
     }
     render() {
         const mainContent = () => {
-            switch(this.state.views){
-                case "LIST":
-                    return(
-                        <TableComponent choice="BOOK" onChangerView={this.onChangerView} data={this.props.data} onDelete={this.onDelete}></TableComponent>
+            switch (this.state.views) {
+                case 'LIST':
+                    return (
+                        <TableComponent choice="BOOK" onChangerView={this.onChangerView}></TableComponent>
                     )
                 case 'FORM':
-                    return(
-                        <FormComponent choice ="BOOK" onAddBook={this.onAddBook} rooms={this.props.rooms}></FormComponent>
+                    return (
+                        <FormComponent choice="BOOK"></FormComponent>
                     )
                 default:
-                    return (
-                        <></>
-                    )
+                    return (<></>)
             }
         }
         return (
@@ -59,7 +52,6 @@ class BookRoomPage extends Component {
                     </div>
 
                 </section>
-                
             </div>
         );
     }

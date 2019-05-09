@@ -102,9 +102,11 @@ export function requestUpdateEvent(data) {
     if (data.is_resize) {
         if (data.is_drop) {
             formDataObject = {
-                'daystart': data.daystart
+                'daystart': data.daystart,
+                'timestart':data.timestart,
+                'timeend':data.timeend,
             }
-        } else {
+        } else {            
             formDataObject = {
                 'timeend': data.timeEnd
             }

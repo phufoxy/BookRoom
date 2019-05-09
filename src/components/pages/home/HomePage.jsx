@@ -11,7 +11,10 @@ class HomePage extends Component {
             visible: false,
             calender: [],
             is_getdate: false,
-            datecalender: ''
+            datecalender: '',
+            edit: false,
+            dataEdit: {},
+            is_edit: false
         }
     }
     componentDidMount() {
@@ -32,7 +35,79 @@ class HomePage extends Component {
         })
     }
     onDelete = (id) => {
-        this.props.requestDeleteEvent(id);
+        this.props.dispatch(action.requestDeleteEvent(id));
+    }
+    onEdit = (id) => {
+        let item = [...this.props.data].filter(item => item.id === id);
+        if (item.length > 0) {
+            this.setState({
+                dataEdit: item[0],
+                edit: true
+            })
+        }
+
+    }
+    onUpdate = (data) => {
+        this.props.dispatch(action.requestUpdateEvent(data));
+        this.setState({
+            edit: false
+        })
+    }
+    onCancleEdit = () => {
+        this.setState({
+            edit: false
+        })
+    }
+    convertMinsToHrsMins(mins) {
+        let h = Math.floor(mins / 60);
+        let m = mins % 60;
+        h = h < 10 ? '0' + h : h;
+        m = m < 10 ? '0' + m : m;
+        return `${h}:${m}`;
+    }
+    convertToFrontEnd(arrA) {
+        let arrB = []
+        if (arrA.length) {
+            arrB = arrA.map(item => {
+                let attributes = item.attributes;
+                return {
+                    id: item.id,
+                    title: attributes.content,
+                    className: attributes.id_rooms === 1 ? "SMALL" : "BIG",
+                    start: attributes.daystart,
+                    room: attributes.id_rooms === 1 ? "Phòng Nhỏ" : "Phòng Lớn",
+                    user: attributes.nameuser,
+                    timestart: attributes.timestart,
+                    timeend: attributes.timeend,
+                    redate: attributes && attributes.repeat !== null ? attributes.repeat.repeatby : 'Không Lặp',
+                    reweek: attributes && attributes.repeat !== null ? attributes.repeat.byweekday : '',
+                    recount: attributes && attributes.repeat !== null ? attributes.repeat.count : '',
+                    repeat: attributes && attributes.repeat !== null ? '1' : '0',
+                    rrule: attributes && attributes.repeat !== null ?
+                        {
+                            freq: attributes.repeat.repeatby,
+                            interval: attributes.repeat.interval,
+                            byweekday: attributes.repeat.byweekday,
+                            dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
+                            count: attributes.repeat.count
+                        } : {
+                            freq: "daily",
+                            interval: 1,
+                            dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
+                            count: 1
+                        },
+                    duration: this.convertMinsToHrsMins(moment(`${attributes.daystart + ' ' + attributes.timeend}`).diff(`${item.attributes.daystart + ' ' + item.attributes.timestart}`, 'minutes'))
+                }
+            })
+        }
+        return arrB;
+    }
+    onChangerRoom = (data) => {
+        if (data === 0) {
+            this.props.dispatch(action.requestGetEvent());
+        } else {
+            this.props.dispatch(action.requestGetEventByRoom(data));
+        }
     }
     render() {
 
@@ -41,9 +116,9 @@ class HomePage extends Component {
                 <HeaderLayout></HeaderLayout>
                 <main className="b-page-main">
                     <div className="b-block">
-                        <SlideBar onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>
+                        <SlideBar onCancleEdit={this.onCancleEdit} onChangerRoom={this.onChangerRoom} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>
                         <div className="b-block-right">
-                            <FullcalenderComponent onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.props.data}></FullcalenderComponent>
+                            <FullcalenderComponent onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
                         </div>
                     </div>
                 </main>

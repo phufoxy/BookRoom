@@ -24,7 +24,7 @@ const radioStyle = {
   lineHeight: '30px',
 };
 function disabledHours() {
-  return [0, 1, 2, 3, 4, 5, 6, 7, 12,18, 19, 20, 21, 22, 23, 24];
+  return [0, 1, 2, 3, 4, 5, 6, 7, 12, 18, 19, 20, 21, 22, 23, 24];
 }
 class SlideBar extends Component {
   constructor(props, context) {
@@ -76,6 +76,7 @@ class SlideBar extends Component {
     this.setState({
       visible: false,
     });
+    this.props.onCancleEdit();
   }
   onChanger = (event) => {
     this.setState({

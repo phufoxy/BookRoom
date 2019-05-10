@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-// import { connect } from 'react-redux';
+import { connect } from 'react-redux';
 import { HeaderLayout, SiderLayout, FooterLayout } from '../../layouts/admin';
 import { TableComponent, FormComponent } from '../../shared/admin';
+import { requestAddBookRoom, requestDeleteBookRoom, requestGetBookRoom } from '../../../actions/bookroom';
+import { requestGetRoom } from '../../../actions/room';
 
 class BookRoomPage extends Component {
     constructor(props) {
@@ -15,10 +17,10 @@ class BookRoomPage extends Component {
             views: 'FORM'
         })
     }
-    onDelete = (id) =>{
+    onDelete = (id) => {
         this.props.requestDeleteBookRoom(id);
     }
-    onAddBook = (data) =>{
+    onAddBook = (data) => {
         this.props.requestAddBookRoom(data);
         this.setState({
             views: 'LIST'
@@ -48,7 +50,7 @@ class BookRoomPage extends Component {
                         <div className="container-fluid">
                             {mainContent()}
                         </div>
-                        <FooterLayout></FooterLayout>  
+                        <FooterLayout></FooterLayout>
                     </div>
 
                 </section>
@@ -56,12 +58,12 @@ class BookRoomPage extends Component {
         );
     }
 }
-function mapStateProps(state){
+function mapStateProps(state) {
     return {
-     
+
         data: state.bookroom.all,
         rooms: state.room.all,
-       
+
     }
 }
-export default connect(mapStateProps,{requestGetRoom,requestGetBookRoom,requestDeleteBookRoom,requestAddBookRoom})(BookRoomPage);
+export default connect(mapStateProps, { requestGetRoom, requestGetBookRoom, requestDeleteBookRoom, requestAddBookRoom })(BookRoomPage);

@@ -62,63 +62,7 @@ class HomePage extends Component {
             edit: false
         })
     }
-    convertMinsToHrsMins(mins) {
-        let h = Math.floor(mins / 60);
-        let m = mins % 60;
-        h = h < 10 ? '0' + h : h;
-        m = m < 10 ? '0' + m : m;
-        return `${h}:${m}`;
-    }
-    convertToFrontEnd(arrA) {
-        let arrB = []
-        if (arrA.length) {
-            arrB = arrA.map(item => {
-                let attributes = item.attributes;
-                return {
-                    resourceId: attributes.id_rooms,
-                    id: item.id,
-                    title: attributes.content,
-                    className: attributes.id_rooms === 1 ? "SMALL" : "BIG",
-                    start: attributes.daystart,
-                    room: attributes.id_rooms === 1 ? "Phòng Nhỏ" : "Phòng Lớn",
-                    user: attributes.nameuser,
-                    timestart: attributes.timestart,
-                    timeend: attributes.timeend,
-                    redate: attributes && attributes.repeat !== null ? attributes.repeat.repeatby : 'Không Lặp',
-                    reweek: attributes && attributes.repeat !== null ? attributes.repeat.byweekday : '',
-                    recount: attributes && attributes.repeat !== null ? attributes.repeat.count : '',
-                    repeat: attributes && attributes.repeat !== null ? '1' : '0',
-                    rrule: attributes && attributes.repeat !== null ?
-                        {
-                            freq: attributes.repeat.repeatby,
-                            interval: attributes.repeat.interval,
-                            byweekday: attributes.repeat.byweekday,
-                            dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
-                            count: attributes.repeat.count
-                        } : {
-                            freq: "daily",
-                            interval: 1,
-                            dtstart: `${attributes.daystart + ' ' + attributes.timestart}`,
-                            count: 1
-                        },
-                    duration: this.convertMinsToHrsMins(moment(`${attributes.daystart + ' ' + attributes.timeend}`).diff(`${item.attributes.daystart + ' ' + item.attributes.timestart}`, 'minutes'))
-                }
-            })
-        }
-        return arrB;
-    }
-    convertArrayRoom(arrA) {
-        let arrB = []
-        if (arrA.length) {
-            arrB = arrA.map(item => {
-                return {
-                    id: item.id,
-                    title: item.attributes.name,
-                }
-            })
-        }
-        return arrB;
-    }
+
     onChangerRoom = (data) => {
         if (data === 0) {
             this.props.dispatch(action.requestGetEvent());

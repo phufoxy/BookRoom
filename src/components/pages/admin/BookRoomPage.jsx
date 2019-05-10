@@ -20,10 +20,10 @@ class BookRoomPage extends Component {
             views: 'FORM'
         })
     }
-    onDelete = (id) =>{
+    onDelete = (id) => {
         this.props.requestDeleteBookRoom(id);
     }
-    onAddBook = (data) =>{
+    onAddBook = (data) => {
         this.props.requestAddBookRoom(data);
         this.setState({
             views: 'LIST'
@@ -55,7 +55,7 @@ class BookRoomPage extends Component {
                         <div className="container-fluid">
                             {mainContent()}
                         </div>
-                        <FooterLayout></FooterLayout>  
+                        <FooterLayout></FooterLayout>
                     </div>
 
                 </section>
@@ -64,12 +64,12 @@ class BookRoomPage extends Component {
         );
     }
 }
-function mapStateProps(state){
+function mapStateProps(state) {
     return {
-     
+
         data: state.bookroom.all,
         rooms: state.room.all,
-       
+
     }
 }
 export default connect(mapStateProps,{requestGetRoom,requestGetBookRoom,requestDeleteBookRoom,requestAddBookRoom})(BookRoomPage);

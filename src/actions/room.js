@@ -1,23 +1,18 @@
 import axios from 'axios';
 import { message } from 'antd';
-export const REQUEST_GET_ROOMS = "REQUEST_GET_ROOMS";
-export const REQUEST_DELETE_ROOM = "REQUEST_DELETE_ROOM";
-export const REQUEST_ADD_ROOM = "REQUEST_ADD_ROOM";
-export const REQUEST_UPDATE_ROOM = "REQUEST_UPDATE_ROOM";
-const API_URL = "http://localhost:8080/booking-room/public/api/v1";
-
+import * as types from '../constants/actionType';
+import * as API from '../constants/actionAPI';
 export function requestGetRoom() {
     return (dispatch) => {
-
         return axios.request({
             method: 'GET',
-            url: `${API_URL}/rooms`,
+            url: `${API.API_URL}/rooms`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
             },
         }).then(function (response) {
-            dispatch(receiveData(REQUEST_GET_ROOMS, response.data.data))
+            dispatch(receiveData(types.REQUEST_GET_ROOMS, response.data.data))
         }).catch(function (error) {
 
         })
@@ -28,14 +23,14 @@ export function requestDeleteRoom(id) {
     return (dispatch) => {
         return axios.request({
             method: 'DELETE',
-            url: `${API_URL}/rooms/${id}`,
+            url: `${API.API_URL}/rooms/${id}`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
             },
         }).then(function (response) {
             message.success('Bạn Đã Xóa Thành Công')
-            dispatch(receiveData(REQUEST_DELETE_ROOM, id))
+            dispatch(receiveData(types.REQUEST_DELETE_ROOM, id))
         }).catch(function (error) {
             console.log(error);
 
@@ -53,7 +48,7 @@ export function requestAddRoom(data) {
     return (dispatch) => {
         return axios.request({
             method: 'POST',
-            url: `${API_URL}/rooms`,
+            url: `${API.API_URL}/rooms`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -61,7 +56,7 @@ export function requestAddRoom(data) {
             data: body
         }).then(function (response) {
             message.success('Bạn Đã Thêm  Thành Công')
-            dispatch(receiveData(REQUEST_ADD_ROOM, response.data.data))
+            dispatch(receiveData(types.REQUEST_ADD_ROOM, response.data.data))
         }).catch(function (error) {
             console.log(error);
 
@@ -77,14 +72,14 @@ export function requestEditRoom(data) {
     return (dispatch) => {
         return axios.request({
             method: 'PUT',
-            url: `${API_URL}/rooms/${data.id}?name=${data.name}&type=${data.type}`,
+            url: `${API.API_URL}/rooms/${data.id}?name=${data.name}&type=${data.type}`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
             },
 
-        }).then(function (response) {            
-            dispatch(receiveData(REQUEST_UPDATE_ROOM,response.data.data))
+        }).then(function (response) {
+            dispatch(receiveData(types.REQUEST_UPDATE_ROOM, response.data.data))
         }).catch(function (error) {
             console.log(error);
         })

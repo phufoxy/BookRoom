@@ -1,5 +1,4 @@
-import {REQUEST_GET_BOOKROOM,REQUEST_DELETE_BOOKROOM,REQUEST_ADD_BOOKROOM} from '../actions/bookroom';
-
+import * as types from '../constants/actionType';
 const INTINIAL_STATE = {
     all: [],
     fetching: false,
@@ -9,15 +8,15 @@ const INTINIAL_STATE = {
 
 export default function(state = INTINIAL_STATE, action = {}){
     switch(action.type){
-        case REQUEST_GET_BOOKROOM:
+        case types.REQUEST_GET_BOOKROOM:
             return Object.assign({},state,{
                 all: action.payload
             })
-        case REQUEST_DELETE_BOOKROOM:
+        case types.REQUEST_DELETE_BOOKROOM:
             return Object.assign({},state,{
                 all: state.all.filter(item => item.id !== action.payload)
             })
-        case REQUEST_ADD_BOOKROOM:
+        case types.REQUEST_ADD_BOOKROOM:
             return Object.assign({},state,{
                 all: [...state.all,action.payload]
             })

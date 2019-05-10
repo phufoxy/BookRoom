@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { HeaderLayout, SlideBar } from '../../layouts/home';
 import { FullcalenderComponent } from '../../shared/home';
 import * as action from '../../../actions/events';
+import * as action_Room from '../../../actions/room';
 var moment = require('moment');
 
 class HomePage extends Component {
@@ -19,7 +20,11 @@ class HomePage extends Component {
         }
     }
     componentDidMount() {
+        this.onGetData();
+    }
+    onGetData() {
         this.props.dispatch(action.requestGetEvent());
+        this.props.dispatch(action_Room.requestGetRoom());
     }
     componentWillUnmount() {
         clearInterval(this.interval);
@@ -70,6 +75,7 @@ class HomePage extends Component {
             arrB = arrA.map(item => {
                 let attributes = item.attributes;
                 return {
+                    resourceId: attributes.id_rooms,
                     id: item.id,
                     title: attributes.content,
                     className: attributes.id_rooms === 1 ? "SMALL" : "BIG",
@@ -101,6 +107,18 @@ class HomePage extends Component {
         }
         return arrB;
     }
+    convertArrayRoom(arrA) {
+        let arrB = []
+        if (arrA.length) {
+            arrB = arrA.map(item => {
+                return {
+                    id: item.id,
+                    title: item.attributes.name,
+                }
+            })
+        }
+        return arrB;
+    }
     onChangerRoom = (data) => {
         if (data === 0) {
             this.props.dispatch(action.requestGetEvent());
@@ -116,7 +134,7 @@ class HomePage extends Component {
                     <div className="b-block">
                         <SlideBar onCancleEdit={this.onCancleEdit} onChangerRoom={this.onChangerRoom} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>
                         <div className="b-block-right">
-                            <FullcalenderComponent onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
+                            <FullcalenderComponent room={this.convertArrayRoom(this.props.room)} onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
                         </div>
                     </div>
                 </main>
@@ -127,6 +145,7 @@ class HomePage extends Component {
 function mapStateProps(state) {
     return {
         data: state.event.all,
+        room: state.room.all,
         fetched: state.event.fetched
     }
 }

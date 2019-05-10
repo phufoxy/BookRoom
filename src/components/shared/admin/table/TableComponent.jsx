@@ -1,20 +1,28 @@
 import React, { Component } from 'react';
-
+import { Modal } from 'antd';
+const confirm = Modal.confirm;
 var dateFormat = require('dateformat');
 class TableComponent extends Component {
     onChangerView = () => {
-        this
-            .props
-            .onChangerView();
+        this.props.onChangerView();
     }
     onDelete(id) {
-        this
-            .props
-            .onDelete(id);
+        this.props.onDelete(id);
 
     }
-    onEdit(){
-        this.props.onEdit(this.props.id);
+    onEdit(id) {
+        var self = this.props;
+        confirm({
+            title: 'Bạn có muốn sửa phòng?',
+            content: 'Có chắc chắn !',
+            onOk() {
+                self.onEdit(id);
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+
     }
     render() {
         const contentMain = () => {
@@ -35,22 +43,18 @@ class TableComponent extends Component {
                                 </thead>
                                 <tbody>
                                     {this
-                                        .props
-                                        .data
-                                        .map(data => (
+                                        .props.data.map(data => (
                                             <tr key={data.id}>
                                                 <td>{data.id}</td>
                                                 <td>{data.attributes.name}</td>
                                                 <td>{data.attributes.type}</td>
-                                                <td>{dateFormat(data.attributes.created_at, "dd-mm-yyyy hh:MM:ss")}</td>
-                                                <td>{dateFormat(data.attributes.updated_at, "dd-mm-yyyy hh:MM:ss")}</td>
+                                                <td>{dateFormat(data.attributes.created_at, "dd-mm-yyyy HH:MM:ss")}</td>
+                                                <td>{dateFormat(data.attributes.updated_at, "dd-mm-yyyy HH:MM:ss")}</td>
                                                 <td>
-                                                    <button className="btn_edit" onClick={this.onEdit.bind(this)}>Edit</button>&nbsp;
+                                                    <button className="btn_edit" onClick={this.onEdit.bind(this, data.id)}>Edit</button>&nbsp;
                                                     <button
                                                         className="btn_dele"
-                                                        onClick={this
-                                                            .onDelete
-                                                            .bind(this, data.id)}>Delete</button>
+                                                        onClick={this.onDelete.bind(this, data.id)}>Delete</button>
                                                 </td>
                                             </tr>
                                         ))}

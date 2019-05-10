@@ -4,8 +4,9 @@ class FormComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            type: ''
+            id: this.props.dataEdit ? this.props.dataEdit.id : '',
+            name: this.props.dataEdit ? this.props.dataEdit.attributes.name : '',
+            type: this.props.dataEdit ? this.props.dataEdit.attributes.type : 'Phòng Lớn'
         }
     }
     onChanger = (event) => {
@@ -13,12 +14,17 @@ class FormComponent extends Component {
             [event.target.name]: event.target.value
         })
     }
-    onSubmit = (event) =>{
+    onSubmit = (event) => {
         event.preventDefault();
-        this.props.onAdd(this.state);
-        
+        if (this.props.edit) {
+            this.props.onUpdate(this.state);
+        } else {
+            this.props.onAdd(this.state);
+
+        }
+
     }
-    render() {
+    render() {        
         const contentMain = () => {
             switch (this.props.choice) {
                 case "ROOM":
@@ -36,7 +42,7 @@ class FormComponent extends Component {
                             </div>
                             <div className="form-group">
                                 <label className="text-contact">Phòng</label>
-                                <select className="form-control" name="type" onChange={this.onChanger} defaultValue="Phòng Lớn">
+                                <select className="form-control" name="type" onChange={this.onChanger} defaultValue={this.state.type}>
                                     <option className="city">Phòng Lớn</option>
                                     <option className="city">Phòng Nhỏ 1</option>
                                     <option className="city">Phòng Nhỏ 2</option>
@@ -60,7 +66,7 @@ class FormComponent extends Component {
                             </div>
                             <div className="form-group">
                                 <label className="text-contact">Id_Room</label>
-                                <select className="form-control" name="type"  defaultValue="Phòng Lớn">
+                                <select className="form-control" name="type" defaultValue="Phòng Lớn">
                                     <option className="city">1</option>
                                     <option className="city">2</option>
                                     <option className="city">3</option>

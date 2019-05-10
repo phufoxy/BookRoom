@@ -7,6 +7,7 @@
     "@fullcalendar/interaction": "^4.0.1",
     "@fullcalendar/list": "^4.1.0",
     "@fullcalendar/react": "*",
+    "@fullcalendar/resource-timegrid": "^4.1.0",
     "@fullcalendar/rrule": "^4.0.2",
     "@fullcalendar/timegrid": "^4.0.1",
     "antd": "^3.16.5",

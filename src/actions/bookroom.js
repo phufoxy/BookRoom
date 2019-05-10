@@ -12,7 +12,7 @@ export function requestGetBookRoom(){
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
             }
-        }).then(function(response){            
+        }).then(function(response){
             dispatch(receiveData(types.REQUEST_GET_BOOKROOM,response.data.data))
         }).catch(function(error){
             console.log(error);

@@ -10,9 +10,19 @@ class TableComponent extends Component {
         this.props.onDelete(id);
 
     }
-    onEdit(id){
-        this.props.onEdit(id);
-        
+    onEdit(id) {
+        var self = this.props;
+        confirm({
+            title: 'Bạn có muốn sửa phòng?',
+            content: 'Có chắc chắn !',
+            onOk() {
+                self.onEdit(id);
+            },
+            onCancel() {
+                console.log('Cancel');
+            },
+        });
+
     }
     render() {
         const contentMain = () => {

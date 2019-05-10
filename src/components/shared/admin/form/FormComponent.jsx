@@ -96,7 +96,7 @@ class FormComponent extends Component {
                             </div>
                             <div className="form-group">
                                 <label className="text-contact">Phòng</label>
-                                <select className="form-control" name="type" onChange={this.onChanger} defaultValue="Phòng Lớn">
+                                <select className="form-control" name="type" onChange={this.onChanger} defaultValue={this.state.type}>
                                     <option className="city">Phòng Lớn</option>
                                     <option className="city">Phòng Nhỏ 1</option>
                                     <option className="city">Phòng Nhỏ 2</option>

@@ -5,6 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import listPlugin from '@fullcalendar/list';
 import rrulePlugin from '@fullcalendar/rrule';
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
+import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
 import '../../../../main.scss'
 import { Modal } from 'antd';
@@ -196,21 +197,24 @@ class FullcalenderComponent extends Component {
                     header={{
                         right: 'prev,next today',
                         center: 'title',
-                        left: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+                        left: 'dayGridMonth,timeGridWeek,timeGridDay as ,listWeek,resourceTimeGridDay',
                     }}
                     listDayFormat
                     height={'parent'}
                     timeZone={'local'}
                     contentHeight={600}
-                    aspectRatio={22}
+                    aspectRatio={1}
                     handleWindowResize
                     allDayText={'Giờ'}
                     allDaySlot
                     dayNames={['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']}
-                    plugins={[rrulePlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+                    plugins={[resourceTimeGridPlugin, rrulePlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
                     ref={this.calendarComponentRef}
                     weekends={this.state.calendarWeekends}
                     events={this.props.data}
+                    resources={
+                        this.props.room
+                    }
                     defaultDate={dateFormat(this.state.datenow, 'yyyy-mm-dd')}
                     navLinks
                     editable
@@ -231,6 +235,12 @@ class FullcalenderComponent extends Component {
                     }
                     eventDrop={
                         this.oneventDrop
+                    }
+                    windowResize={
+                        function (view) {
+                            console.log(view);
+
+                        }
                     }
                 />
             </div>

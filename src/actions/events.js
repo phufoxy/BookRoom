@@ -46,6 +46,7 @@ export function requestGetEvent() {
 }
 // add tour 
 export function requestAddEvents(data) {
+
     let formDataObject = {};
     if (data.checkbox === true) {
         let arrayDay = '';
@@ -72,7 +73,7 @@ export function requestAddEvents(data) {
         formDataObject = {
             'id_rooms': data.rooms,
             'content': data.title,
-            'nameuser':  cookies.get('data').name,
+            'nameuser': cookies.get('data').name,
             'daystart': data.dateStart,
             'timestart': data.timestart,
             'timeend': data.timeend
@@ -92,8 +93,8 @@ export function requestAddEvents(data) {
         }).then(function (response) {
             if (response.data.original === "Thời gian đặt không hợp lệ") {
                 message.warning('Trùng Lịch Đặt');
-            } else {                                
-                message.success('Thêm Sự Kiện Thành Công');                
+            } else {
+                message.success('Thêm Sự Kiện Thành Công');
                 dispatch(receiveData(types.REQUEST_ADD_EVENT, response.data.data))
             }
 
@@ -138,17 +139,19 @@ export function requestUpdateEvent(data) {
     } else {
         if (data.checkbox === true) {
             let arrayDay = '';
-            data.byweekday.forEach((i, index, item) => {
-                if (index === item.length - 1) {
-                    arrayDay += `${item[index]}`;
-                } else {
-                    arrayDay += `${item[index]},`;
-                }
-            })
+            if (data.byweekday !== null) {
+                data.byweekday.forEach((i, index, item) => {
+                    if (index === item.length - 1) {
+                        arrayDay += `${item[index]}`;
+                    } else {
+                        arrayDay += `${item[index]},`;
+                    }
+                })
+            }
             formDataObject = {
                 'id_rooms': data.rooms,
                 'content': data.title,
-                'nameuser':  cookies.get('data').name,
+                'nameuser': cookies.get('data').name,
                 'daystart': data.dateStart,
                 'timestart': data.timestart,
                 'timeend': data.timeend,
@@ -162,7 +165,7 @@ export function requestUpdateEvent(data) {
             formDataObject = {
                 'id_rooms': data.rooms,
                 'content': data.title,
-                'nameuser':  cookies.get('data').name,
+                'nameuser': cookies.get('data').name,
                 'daystart': data.dateStart,
                 'timestart': data.timestart,
                 'timeend': data.timeend,
@@ -203,6 +206,34 @@ export function requestGetEventByRoom(id) {
             },
         }).then(function (response) {
             dispatch(receiveData(types.REQUEST_FILTER_EVENT_ROOM, response.data.data))
+        }).catch(function (error) {
+            dispatch(requestRejected(error));
+        })
+    }
+}
+// research 
+export function requestSearchEvent(data) {
+    let params = {
+        'daystart': data.dateStart,
+        'timestart': data.timestart,
+        'timeend': data.timeend
+    }
+    return (dispatch) => {
+        dispatch(requestLoading());
+        return axios.request({
+            method: 'GET',
+            url: `${typeAPI.API_URL}/getbrbyday`,
+            params,
+            headers: {
+                "Accept": "application/json",
+                'Content-Type': 'application/json',
+            },
+        }).then(function (response) {
+            if (response.data.data.length > 0) {
+                dispatch(receiveData(types.REQUEST_RESEARCH, response.data.data));
+            } else {
+                message.warning('Không có lịch nào trong khoảng thời gian này !!!');
+            }
         }).catch(function (error) {
             dispatch(requestRejected(error));
         })

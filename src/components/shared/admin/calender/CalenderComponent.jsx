@@ -2,59 +2,41 @@ import React, { Component } from 'react';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
-import listPlugin from '@fullcalendar/list';
-import rrulePlugin from '@fullcalendar/rrule';
 import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
+import rrulePlugin from '@fullcalendar/rrule';
+import listPlugin from '@fullcalendar/list';
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
-import '../../../../main.scss'
 import { Modal } from 'antd';
 import Cookies from 'universal-cookie';
 import { message } from 'antd';
 const cookies = new Cookies();
-const confirm = Modal.confirm;
 var dateFormat = require('dateformat');
 var now = new Date()
-dateFormat.i18n = {
-    dayNames: [
-        'CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7',
-        'Chủ Nhật', 'Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7'
-    ],
-    monthNames: [
-        'T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8', 'T9', 'T10', 'T11', 'T12',
-        'Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'
-    ],
-    timeNames: [
-        'a', 'p', 'am', 'pm', 'A', 'P', 'AM', 'PM'
-    ]
-};
-class FullcalenderComponent extends Component {
+const confirm = Modal.confirm;
+class CalenderComponent extends Component {
     calendarComponentRef = React.createRef()
     constructor(props) {
         super(props);
         this.state = {
-            calendarWeekends: true,
-            ArrayList: [],
-            show: false,
-            title: '',
-            description: '',
-            datenow: now
-
+            show: false
         }
     }
     componentDidUpdate(prevProps, prevState) {
-        if (prevProps.datecalender !== this.props.datecalender) {
+        if (prevProps.onDate !== this.props.onDate) {
             let calendarApi = this.calendarComponentRef.current.getApi()
-            calendarApi.gotoDate(dateFormat(this.props.datecalender, 'yyyy-mm-dd'))
+            calendarApi.gotoDate(this.props.onDate) // call a method on the Calendar object
+        }
+        if (prevProps.isFilter !== this.props.isFilter) {
+            let calendarApi = this.calendarComponentRef.current.getApi()
+            calendarApi.gotoDate(this.props.onDate) // call a method on the Calendar object
         }
     }
-    toggleWeekends = () => {
-        this.setState({ // update a property
-            calendarWeekends: !this.state.calendarWeekends
-        })
+    gotoPast = () => {
+        let calendarApi = this.calendarComponentRef.current.getApi()
+        calendarApi.gotoDate('2000-01-01') // call a method on the Calendar object
     }
-
-    onEvent(info) {
+    onEvent = (info) => {
         this.setState({
             show: true,
             title: info.event.title,
@@ -70,7 +52,6 @@ class FullcalenderComponent extends Component {
         })
 
     }
-
     handleClose = () => {
         this.setState({ show: false });
     }
@@ -91,14 +72,10 @@ class FullcalenderComponent extends Component {
             title: 'Bạn Muốn Xóa Sự Kiện?',
             content: 'Bạn Có Chắc Chắn',
             onOk() {
-                if (cookies.get('data') === undefined) {
-                    message.warning('Vui Lòng Đăng Nhập Để Xóa Sự Kiện !')
-                } else {
-                    self.onDelete(id);
-                }
+                self.onDelete(id);
             },
             onCancel() {
-                self.onCancleEdit();
+                // self.onCancleEdit();
             },
         });
         this.setState({
@@ -124,12 +101,6 @@ class FullcalenderComponent extends Component {
             show: !this.state.show
         })
     }
-    handleDrop = (eventObj, date) => {
-        console.group('onDrop');
-        console.log('date');
-        console.dir(date);
-        console.groupEnd();
-    }
     onResize = (info) => {
         let data = {
             id: info.event.id,
@@ -151,7 +122,7 @@ class FullcalenderComponent extends Component {
     }
     render() {
         return (
-            <div className="b-fullcalender">
+            <>
                 <Modal
                     header={null}
                     visible={this.state.show}
@@ -162,12 +133,12 @@ class FullcalenderComponent extends Component {
                     <div className="b-events">
                         <div className="b-button-funtion">
                             <div className="b-item">
-                                <button className="b-btn" onClick={this.onEdit.bind(this, this.state.id)}>
+                                <button className="b-btn" onClick={this.onEdit.bind(this, this.state.id)} >
                                     <i className="fas fa-pencil-alt" />
                                 </button>
                             </div>
                             <div className="b-item">
-                                <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id)}>
+                                <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id)} >
                                     <i className="far fa-trash-alt" />
                                 </button>
                             </div>
@@ -205,40 +176,35 @@ class FullcalenderComponent extends Component {
                 </Modal>
                 <FullCalendar
                     schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
-                    defaultView="timeGridWeek"
-                    header={{
-                        right: 'prev,next today',
-                        center: 'title',
-                        left: 'dayGridMonth,timeGridWeek,timeGridDay as ,listWeek,resourceTimeGridDay',
-                    }}
-                    listDayFormat
+                    locales={allLocales}
+                    locale={'vi'}
                     height={'parent'}
-                    timeZone={'local'}
                     contentHeight={600}
-                    aspectRatio={1}
+                    timeZone={'local'}
+                    defaultView={"timeGridWeek"}
                     handleWindowResize
-                    allDayText={'Giờ'}
-                    allDaySlot
+                    listDayFormat
+                    aspectRatio={1}
+                    header={{
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay as ,listWeek,resourceTimeGridDay'
+                    }}
                     dayNames={['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado']}
                     plugins={[resourceTimeGridPlugin, rrulePlugin, dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+                    datesAboveResources
                     ref={this.calendarComponentRef}
-                    weekends={this.state.calendarWeekends}
                     events={this.props.data}
-                    resources={
-                        this.props.room
-                    }
-                    defaultDate={dateFormat(this.state.datenow, 'yyyy-mm-dd')}
+                    defaultDate={now}
                     navLinks
                     editable
                     eventLimit
-                    viewObject={{
-                        currentStart: '2019-05-07'
-                    }}
                     minTime={'07:30:00'}
-                    maxTime={'19:30:00'}
-                    eventClick={this.onEvent.bind(this)}
-                    locales={allLocales}
-                    locale={'vi'}
+
+                    maxTime={'18:30:00'}
+                    eventClick={
+                        this.onEvent
+                    }
                     eventOverlap={function (stillEvent, movingEvent) {
                         return stillEvent.allDay && movingEvent.allDay;
                     }}
@@ -248,16 +214,10 @@ class FullcalenderComponent extends Component {
                     eventDrop={
                         this.oneventDrop
                     }
-                    windowResize={
-                        function (view) {
-                            console.log(view);
-
-                        }
-                    }
                 />
-            </div>
+            </>
         );
     }
 }
 
-export default FullcalenderComponent;
+export default CalenderComponent;

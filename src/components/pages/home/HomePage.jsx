@@ -4,6 +4,9 @@ import { HeaderLayout, SlideBar } from '../../layouts/home';
 import { FullcalenderComponent } from '../../shared/home';
 import * as action from '../../../actions/events';
 import * as action_Room from '../../../actions/room';
+import Cookies from 'universal-cookie';
+import { message } from 'antd';
+const cookies = new Cookies();
 var moment = require('moment');
 
 class HomePage extends Component {
@@ -30,7 +33,11 @@ class HomePage extends Component {
         clearInterval(this.interval);
     }
     onAddEvent = (data) => {
-        this.props.dispatch(action.requestAddEvents(data));
+        if (cookies.get('data') === undefined) {
+            message.warning('Vui Lòng Đăng Nhập Để Được Đặt Lịch !')
+        } else {
+            this.props.dispatch(action.requestAddEvents(data));
+        }
     }
     onGetDate = (data) => {
         this.setState({
@@ -39,7 +46,12 @@ class HomePage extends Component {
         })
     }
     onDelete = (id) => {
-        this.props.dispatch(action.requestDeleteEvent(id));
+        if (cookies.get('data') === undefined) {
+            message.warning('Vui Lòng Đăng Nhập Để Xóa  Sự Kiện !')
+        } else {
+            this.props.dispatch(action.requestDeleteEvent(id));
+
+        }
     }
     onEdit = (id) => {
         let item = [...this.props.data].filter(item => item.id === id);
@@ -56,6 +68,7 @@ class HomePage extends Component {
         this.setState({
             edit: false
         })
+
     }
     onCancleEdit = () => {
         this.setState({
@@ -155,7 +168,7 @@ class HomePage extends Component {
             this.props.dispatch(action.requestGetEventByRoom(data));
         }
     }
-    render() {        
+    render() {
         return (
             <div className="wrapper">
                 <HeaderLayout></HeaderLayout>

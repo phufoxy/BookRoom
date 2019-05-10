@@ -3,6 +3,9 @@ import { Modal, Button, DatePicker, TimePicker, Checkbox, Select, Radio } from '
 import { CalenderComponent } from '../../shared/home';
 import moment from 'moment';
 import 'antd/dist/antd.css';
+import Cookies from 'universal-cookie';
+import { message } from 'antd';
+const cookies = new Cookies();
 var dateFormatDate = require('dateformat');
 const format = 'HH:mm';
 const dateFormat = 'YYYY-MM-DD';
@@ -42,6 +45,30 @@ class SlideBar extends Component {
       count: 1,
       choice: 'daily',
       value: 0,
+      formErrors: { title: '' },
+      titleValid: false,
+    }
+  }
+  validateField = (fieldName, value) => {
+    let fieldValidationErrors = this.state.formErrors;
+    let titleValid = this.state.titleValid;
+    switch (fieldName) {
+      case "title":
+        titleValid = value.length >= 6;
+        fieldValidationErrors.title = titleValid ? '' : ' Vui Lòng Điền Hơn  6 Ký Tự';
+        break;
+      default:
+        break;
+    }
+    this.setState({
+      formErrors: fieldValidationErrors,
+      titleValid: titleValid,
+    }, this.validateForm);
+  }
+  validateForm = () => {
+    if (this.state.titleValid) {
+      this.setState({ formValid: this.state.titleValid })
+
     }
   }
   componentDidUpdate(prevProps, prevState) {
@@ -62,9 +89,13 @@ class SlideBar extends Component {
     }
   }
   showModal = () => {
-    this.setState({
-      visible: true
-    })
+    if (cookies.get('data') === undefined) {
+      message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')
+    } else {
+      this.setState({
+        visible: true
+      })
+    }
   }
   handleOk = (e) => {
     this.setState({
@@ -79,9 +110,10 @@ class SlideBar extends Component {
     this.props.onCancleEdit();
   }
   onChanger = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value
-    })
+    const name = event.target.name;
+    const value = event.target.value;
+    this.setState({ [name]: value },
+      () => { this.validateField(name, value) });
   }
   onChangerTime = (value) => {
     this.setState({
@@ -161,6 +193,13 @@ class SlideBar extends Component {
       value: e.target.value,
     });
   }
+  onCancel = (e) => {
+    e.preventDefault();
+    this.setState({
+      visible: false
+    })
+
+  }
   render() {
     return (
       <div className="b-block-left">
@@ -184,6 +223,7 @@ class SlideBar extends Component {
               <form className="b-form" onSubmit={this.onSubmit}>
                 <div className="b-form-group">
                   <input type="text" placeholder="Nhập Tiêu Đề" name="title" className="b-input" onChange={this.onChanger} value={this.state.title} />
+                  {this.state.formErrors.title ? <span>{this.state.formErrors.title}</span> : <></>}
                 </div>
                 <div className="b-form-group">
                   <label style={{ paddingRight: '10px' }}>Chọn Ngày</label>
@@ -254,8 +294,8 @@ class SlideBar extends Component {
                   </div>
                 </div>
                 <div className="b-form-button">
-                  <button type="cancel" className="b-btn b-btn-save waves-effect waves-teal">Hủy</button>
-                  <button type="submit" className="b-btn b-btn-cancel waves-effect waves-teal">Lưu</button>
+                  <button type="cancel" disabled={this.state.formErrors ? true : false} className="b-btn b-btn-cancel  waves-effect waves-teal" onClick={this.onCancel}>Hủy</button>
+                  <button type="submit" className="b-btn b-btn-save waves-effect waves-teal">Lưu</button>
                 </div>
               </form>
             </div>

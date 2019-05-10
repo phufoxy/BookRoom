@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { GoogleLogin } from 'react-google-login';
 import Cookies from 'universal-cookie';
 import * as action from '../../../actions/login';
+import { Redirect } from 'react-router-dom';
 const cookies = new Cookies();
 class HeaderLayout extends Component {
     constructor(props, context) {
@@ -11,7 +12,8 @@ class HeaderLayout extends Component {
         this.state = {
             visible: false,
             is_dropdown: false,
-            isLogout: false
+            isLogout: false,
+            isRedirect: false
         }
     }
     componentDidMount() {
@@ -72,20 +74,35 @@ class HeaderLayout extends Component {
     setWrapperRef = (node) => {
         this.wrapperRef = node;
     }
-    render() {        
+    onRedirect = () => {
+        this.setState({
+            isRedirect: !this.state.isRedirect
+        })
+    }
+    render() {
+        if (this.state.isRedirect) {
+            return (
+                <Redirect to="/admin"></Redirect>
+            )
+        }
         const contentLogin = () => {
             if (cookies.get('data') !== undefined) {
                 return (
-                    <li className={this.state.is_dropdown ? "b-item b-dropdown is-active" : "b-item b-dropdown"}>
-                        <button className="b-btn" onClick={this.onShowLogout}><i className="fas fa-user" /> Xin Chào, {this.props.user.name}</button>
-                        <div className="b-hash-menu">
-                            <div className="b-logout">
-                                <button className="b-btn" onClick={this.logout}>
-                                    <i className="fas fa-sign-out-alt"></i> Logout
+                    <>
+                        <li className="b-item">
+                            <button className="b-btn" onClick={this.onRedirect}><i className="fas fa-cog" /></button>
+                        </li>
+                        <li className={this.state.is_dropdown ? "b-item b-dropdown is-active" : "b-item b-dropdown"}>
+                            <button className="b-btn" onClick={this.onShowLogout}><i className="fas fa-user" /> Xin Chào, {this.props.user.name}</button>
+                            <div className="b-hash-menu">
+                                <div className="b-logout">
+                                    <button className="b-btn" onClick={this.logout}>
+                                        <i className="fas fa-sign-out-alt"></i> Logout
                                 </button>
+                                </div>
                             </div>
-                        </div>
-                    </li>
+                        </li>
+                    </>
                 )
             } else {
                 return (
@@ -154,9 +171,7 @@ class HeaderLayout extends Component {
                             <li className="b-item">
                                 <button className="b-btn"><i className="fas fa-bell" /></button>
                             </li>
-                            <li className="b-item">
-                                <button className="b-btn"><i className="fas fa-cog" /></button>
-                            </li>
+
                             {contentLogout()}
 
                         </div>

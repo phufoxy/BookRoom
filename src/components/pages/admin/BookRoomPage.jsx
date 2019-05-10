@@ -38,7 +38,7 @@ class BookRoomPage extends Component {
                     )
                 case 'FORM':
                     return (
-                        <FormComponent choice="BOOK"></FormComponent>
+                        <FormComponent rooms={this.props.rooms} choice="BOOK"></FormComponent>
                     )
                 default:
                     return (<></>)

@@ -9,7 +9,7 @@ const propTypes = {
 
 const defaultProps = {
     initialPage: 1,
-    pageSize: 9
+    pageSize: 5
 }
 
 class Pagination extends Component {
@@ -111,35 +111,33 @@ class Pagination extends Component {
         }
         return (
             <div className="b-pagination">
-                <nav className="b-page-nav">
-                    <ul className="b-list-item">
-                        <li className={pager.currentPage === 1 ? 'b-item b-arrow-first disabled' : 'b-item b-arrow-first'}>
-                            <button className="b-btn" onClick={() => this.setPage(1)}>
-                                <i className="fas fa-angle-double-left"></i>
-                            </button>
+                <ul className="b-list-page">
+                    <li className="page-number">
+                        <button className="btn-page" onClick={() => this.setPage(1)}>
+                            <i className="fas fa-angle-double-left"></i>
+                        </button>
+                    </li>
+                    <li className="page-number" >
+                        <button className="btn-page" onClick={() => this.setPage(pager.currentPage - 1)}>
+                            <i className="fas fa-chevron-left"></i>
+                        </button>
+                    </li>
+                    {pager.pages.map((page, index) =>
+                        <li key={index} className="page-number">
+                            <button className="btn-page" onClick={() => this.setPage(page)}>{page}</button>
                         </li>
-                        <li className={pager.currentPage === 1 ? 'b-item b-arrow-prev disabled' : 'b-item b-arrow-prev'}>
-                            <button className="b-btn" onClick={() => this.setPage(pager.currentPage - 1)}>
-                                <i className="fas fa-chevron-left"></i>
-                            </button>
-                        </li>
-                        {pager.pages.map((page, index) =>
-                            <li key={index} className={pager.currentPage === page ? 'b-item is-active' : 'b-item'}>
-                                <button className="b-btn" onClick={() => this.setPage(page)}>{page}</button>
-                            </li>
-                        )}
-                        <li className={pager.currentPage === pager.totalPages ? 'b-item b-arrow-next disabled' : 'b-item b-arrow-next'}>
-                            <button className="b-btn" onClick={() => this.setPage(pager.currentPage + 1)}>
-                                <i className="fas fa-chevron-right"></i>
-                            </button>
-                        </li>
-                        <li className={pager.currentPage === pager.totalPages ? 'b-item b-arrow-last disabled' : 'b-item b-arrow-last'}>
-                            <button className="b-btn" onClick={() => this.setPage(pager.totalPages)}>
-                                <i className="fas fa-angle-double-right"></i>
-                            </button>
-                        </li>
-                    </ul>
-                </nav>
+                    )}
+                    <li className="page-number">
+                        <button className="btn-page" onClick={() => this.setPage(pager.currentPage + 1)}>
+                            <i className="fas fa-chevron-right"></i>
+                        </button>
+                    </li>
+                    <li className="page-number">
+                        <button className="btn-page" onClick={() => this.setPage(pager.totalPages)}>
+                            <i className="fas fa-angle-double-right"></i>
+                        </button>
+                    </li>
+                </ul>
             </div>
         );
     }

@@ -200,9 +200,10 @@ class SlideBar extends Component {
                 <div className="b-form-group">
                   <label htmlFor="c">Chọn Phòng</label>
                   <select className="b-select" defaultValue={this.state.rooms} name="rooms" onChange={this.onChanger}>
-                    <option value={1}>Phòng Nhỏ  </option>
-                    <option value={2}>Phòng lớn</option>
-                    <option>Phòng lớn</option>
+                    {this.props.room.map(data => (
+                      <option value={data.id} key={data.id}>{data.title}</option>
+                    ))}
+
                   </select>
                 </div>
                 <div className="b-form-group">
@@ -270,10 +271,9 @@ class SlideBar extends Component {
           <div className="b-form" style={{ textAlign: "left" }}>
             <RadioGroup onChange={this.onChangeRadio} value={this.state.value}>
               <Radio style={radioStyle} value={0}>Tất Cả</Radio>
-              <Radio style={radioStyle} value={1}>Phòng Họp Lớn</Radio>
-              <Radio style={radioStyle} value={2}>Phòng Hợp Nhỏ</Radio>
-              <Radio style={radioStyle} value={3}>Phòng Hợp Nhỏ</Radio>
-
+              {this.props.room.map(data => (
+                <Radio style={radioStyle} value={data.id} key={data.id}>{data.title}</Radio>
+              ))}
             </RadioGroup>
           </div>
         </div>

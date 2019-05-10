@@ -13,8 +13,9 @@ class TableComponent extends Component {
             .onDelete(id);
 
     }
-    onEdit(){
-        this.props.onEdit(this.props.id);
+    onEdit(id){
+        this.props.onEdit(id);
+        
     }
     render() {
         const contentMain = () => {
@@ -30,7 +31,8 @@ class TableComponent extends Component {
                                         <th>Type</th>
                                         <th>Create_at</th>
                                         <th>Update_at</th>
-                                        <th>Actions</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -45,8 +47,11 @@ class TableComponent extends Component {
                                                 <td>{dateFormat(data.attributes.created_at, "dd-mm-yyyy hh:MM:ss")}</td>
                                                 <td>{dateFormat(data.attributes.updated_at, "dd-mm-yyyy hh:MM:ss")}</td>
                                                 <td>
-                                                    <button className="btn_edit" onClick={this.onEdit.bind(this)}>Edit</button>&nbsp;
-                                                    <button
+                                                    <button className="btn_edit" onClick={this.onEdit.bind(this,data.id)}>Edit</button>&nbsp;
+                                                   
+                                                </td>
+                                                <td>
+                                                <button
                                                         className="btn_dele"
                                                         onClick={this
                                                             .onDelete
@@ -75,74 +80,37 @@ class TableComponent extends Component {
                                         <th>Repeat</th>
                                         <th>Created_at</th>
                                         <th>Update_at</th>
-                                        <th>Actions</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr >
-                                        <td>1</td>
-                                        <td>Họp Phỏng Vấn</td>
-                                        <td>2</td>
-                                        <td>văn phú</td>
-                                        <td>2019/05/07</td>
-                                        <td>09:30:00</td>
-                                        <td>10:30:00</td>
-                                        <td>null</td>
-                                        <td>07-05-2019 02:27:40</td>
-                                        <td>07-05-2019 02:27:40</td>
-                                        <td>
-                                            <button className="btn_edit">Edit</button>&nbsp;
-                                            <button className="btn_dele">Delete</button>
-                                        </td>
-                                    </tr>
-                                    <tr >
-                                        <td>2</td>
-                                        <td>Họp Phỏng Vấn</td>
-                                        <td>3</td>
-                                        <td>văn phú</td>
-                                        <td>2019/05/07</td>
-                                        <td>09:30:00</td>
-                                        <td>10:30:00</td>
-                                        <td>null</td>
-                                        <td>07-05-2019 02:27:40</td>
-                                        <td>07-05-2019 02:27:40</td>
-                                        <td>
-                                            <button className="btn_edit">Edit</button>&nbsp;
-                                            <button className="btn_dele">Delete</button>
-                                        </td>
-                                    </tr>
-                                    <tr >
-                                        <td>2</td>
-                                        <td>Họp Phỏng Vấn</td>
-                                        <td>3</td>
-                                        <td>văn phú</td>
-                                        <td>2019/05/07</td>
-                                        <td>09:30:00</td>
-                                        <td>10:30:00</td>
-                                        <td>null</td>
-                                        <td>07-05-2019 02:27:40</td>
-                                        <td>07-05-2019 02:27:40</td>
-                                        <td>
-                                            <button className="btn_edit">Edit</button>&nbsp;
-                                            <button className="btn_dele">Delete</button>
-                                        </td>
-                                    </tr>
-                                    <tr >
-                                        <td>2</td>
-                                        <td>Họp Phỏng Vấn</td>
-                                        <td>3</td>
-                                        <td>văn phú</td>
-                                        <td>2019/05/07</td>
-                                        <td>09:30:00</td>
-                                        <td>10:30:00</td>
-                                        <td>null</td>
-                                        <td>07-05-2019 02:27:40</td>
-                                        <td>07-05-2019 02:27:40</td>
-                                        <td>
-                                            <button className="btn_edit">Edit</button>&nbsp;
-                                            <button className="btn_dele">Delete</button>
-                                        </td>
-                                    </tr>
+                                {this
+                                        .props
+                                        .data
+                                        .map(data => (
+                                            <tr key={data.id}>
+                                                <td>{data.id}</td>
+                                                <td>{data.attributes.content}</td>
+                                                <td>{data.attributes.id_rooms}</td>
+                                                <td>{data.attributes.nameuser}</td>
+                                                <td>{data.attributes.daystart}</td>
+                                                <td>{data.attributes.timestart}</td>
+                                                <td>{data.attributes.timeend}</td>
+                                                <td>{data.attributes.repeat}</td>
+                                                <td>{dateFormat(data.attributes.created_at, "yyyy-mm-dd hh:MM:ss")}</td>
+                                                <td>{dateFormat(data.attributes.updated_at, "yyyy-mm-dd hh:MM:ss")}</td>
+                                                <td>
+                                                    <button className="btn_edit">Edit</button>&nbsp;
+        
+                                                </td>
+                                                <td>
+                                                    <button className="btn_dele" onClick={this.onDelete.bind(this,data.id)}>Delete</button>
+                                                </td>
+                                            </tr>
+
+                                        ))
+                                }
                                 </tbody>
                             </table>
                         </div>

@@ -2,7 +2,8 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { HeaderLayout, SiderLayout,FooterLayout } from '../../layouts/admin';
 import { TableComponent,FormComponent } from '../../shared/admin';
-
+import {requestGetBookRoom,requestDeleteBookRoom,requestAddBookRoom} from '../../../actions/bookroom';
+import {requestGetRoom} from '../../../actions/room';
 class BookRoomPage extends Component {
     constructor(props){
         super(props);
@@ -10,21 +11,38 @@ class BookRoomPage extends Component {
             views: 'LIST'
         }
     }
+    componentDidMount(){
+        this.props.requestGetBookRoom();
+        this.props.requestGetRoom();
+    }
     onChangerView = () =>{
         this.setState({
             views: 'FORM'
         })
     }
+    onDelete = (id) =>{
+        this.props.requestDeleteBookRoom(id);
+    }
+    onAddBook = (data) =>{
+        this.props.requestAddBookRoom(data);
+        this.setState({
+            views: 'LIST'
+        })
+    }
     render() {
-        const mainContent = ()=>{
+        const mainContent = () => {
             switch(this.state.views){
-                case 'LIST':
+                case "LIST":
                     return(
-                        <TableComponent choice="BOOK" onChangerView={this.onChangerView}></TableComponent>
+                        <TableComponent choice="BOOK" onChangerView={this.onChangerView} data={this.props.data} onDelete={this.onDelete}></TableComponent>
                     )
                 case 'FORM':
                     return(
-                        <FormComponent choice ="BOOK"></FormComponent>
+                        <FormComponent choice ="BOOK" onAddBook={this.onAddBook} rooms={this.props.rooms}></FormComponent>
+                    )
+                default:
+                    return (
+                        <></>
                     )
             }
         }
@@ -37,7 +55,7 @@ class BookRoomPage extends Component {
                         <div className="container-fluid">
                             {mainContent()}
                         </div>
-                        <FooterLayout></FooterLayout>
+                        <FooterLayout></FooterLayout>  
                     </div>
 
                 </section>
@@ -46,5 +64,12 @@ class BookRoomPage extends Component {
         );
     }
 }
-
-export default BookRoomPage;
+function mapStateProps(state){
+    return {
+     
+        data: state.bookroom.all,
+        rooms: state.room.all,
+       
+    }
+}
+export default connect(mapStateProps,{requestGetRoom,requestGetBookRoom,requestDeleteBookRoom,requestAddBookRoom})(BookRoomPage);

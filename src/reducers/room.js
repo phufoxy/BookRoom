@@ -23,12 +23,8 @@ export default function (state = INITIAL_STATE, action = {}) {
                 all: [...state.all, action.payload]
             })
         case REQUEST_UPDATE_ROOM:
-            const indexItem = state.data.findIndex(item => item.id === action.payload.id)
-            var dataEdit = [...state.data]
-            dataEdit[indexItem].name = action.payload.name;
-            dataEdit[indexItem].type = action.payload.type; 
             return Object.assign({},state,{
-                all: dataEdit
+                all: state.all.map(data => data.id === action.payload.id ? action.payload : data)
             })
         default:
             return state;

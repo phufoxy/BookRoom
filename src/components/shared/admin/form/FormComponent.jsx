@@ -1,11 +1,26 @@
 import React, { Component } from 'react';
-
+import {DatePicker,TimePicker,Checkbox} from 'antd';
+import moment from 'moment';
+import 'antd/dist/antd.css';
+// var dateFormatDate = require('dateformat');
+const dateFormat = 'YYYY-MM-DD';
+const format = 'HH:mm';
+var now = new Date()
 class FormComponent extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            name: '',
-            type: ''
+            id: this.props.dataEdit && this.props.dataEdit.id ? this.props.dataEdit.id : '',
+            name: this.props.edit ? this.props.dataEdit.attributes.name : '',
+            type: this.props.edit ? this.props.dataEdit.attributes.type : '',
+            content: '',
+            id_rooms: '',
+            nameuser: '',
+            daystart: '',
+            timestart: '07:30',
+            timeend: '08:30',
+            repeat: '',
+            checkbox: false,
         }
     }
     onChanger = (event) => {
@@ -13,25 +28,70 @@ class FormComponent extends Component {
             [event.target.name]: event.target.value
         })
     }
-    onSubmit = (event) =>{
+    onSubmitRoom = (event) => {
         event.preventDefault();
-        this.props.onAdd(this.state);
-        
+        if (this.props.edit) {
+            this.props.onUpdate(this.state);
+            this.onReset();
+        } else {
+            this.props.onAdd(this.state);
+            this.onReset();
+        }
+
+    }
+    
+    onChangeDate = (date,dateString) =>{
+        this.setState({
+            daystart: dateString
+        })
+    }
+    onChangeTime = (time, timeString) => {
+        if (timeString >= this.state.timeend) {
+            this.setState({
+                timestart: timeString,
+                timeend: timeString
+            })
+        } else {
+            this.setState({
+                timestart: timeString,
+                timeend: timeString
+            })
+        }
+    }
+    onChangeTimeItem = (date, dateString) => {
+        this.setState({
+            timeend: dateString
+        })
+    }
+    onChangeCheck = (e) =>{
+        this.setState({
+            checkbox: e.target.checked
+        })
+    }
+    submitBook = (event) =>{
+        event.preventDefault();
+        this.props.onAddBook(this.state);
+    }
+    onReset() {
+        this.setState({
+            name: '',
+            type: ''
+        })
     }
     render() {
+       
         const contentMain = () => {
             switch (this.props.choice) {
                 case "ROOM":
                     return (
-                        <form className="form-horizontal form-material" onSubmit={this.onSubmit}>
+                        <form className="form-horizontal form-material" onSubmit={this.onSubmitRoom}>
                             <div className="form-group">
                                 <label className="text-contact">Name</label>
                                 <input
                                     onChange={this.onChanger}
                                     name="name"
                                     value={this.state.name}
-                                    className="form-control"
-                                    placeholder="Johnathan Doe"
+                                    className="form-control"                                   
                                     type="text" />
                             </div>
                             <div className="form-group">
@@ -50,72 +110,57 @@ class FormComponent extends Component {
                     )
                 case "BOOK":
                     return (
-                        <form className="form-horizontal form-material">
+                        <form className="form-horizontal form-material" onSubmit={this.submitBook}>
                             <div className="form-group">
                                 <label className="text-contact">Content</label>
                                 <input
-                                    name="name"
+                                    value={this.state.content}
+                                    onChange={this.onChanger}
+                                    name="content"
                                     className="form-control"
                                     type="text" />
                             </div>
+                            
                             <div className="form-group">
                                 <label className="text-contact">Id_Room</label>
-                                <select className="form-control" name="type"  defaultValue="Phòng Lớn">
-                                    <option className="city">1</option>
-                                    <option className="city">2</option>
-                                    <option className="city">3</option>
-
+                                <select className="form-control" name="id_rooms"  onChange={this.onChanger} defaultValue="2">
+                                   
+                                    {
+                                        this.props.rooms.map(data =>(
+                                            <option className="city">{data.id}</option>
+                                        ))
+                                    }
                                 </select>
                             </div>
                             <div className="form-group">
                                 <label className="text-contact">NameUser</label>
                                 <input
-                                    name="name"
+                                    value={this.state.nameuser}
+                                    onChange={this.onChanger}
+                                    name="nameuser"
                                     className="form-control"
                                     type="text" />
+                            </div>
+                            
+                            <div className="form-group">
+                                <div><label className="text-contact">DayStart</label></div>
+                                <DatePicker style={{width: '100%'}} onChange={this.onChangeDate} defaultValue={moment(now, dateFormat)}/>
                             </div>
                             <div className="form-group">
-                                <label className="text-contact">DayStart</label>
-                                <input
-                                    name="name"
-                                    className="form-control"
-                                    type="text" />
+                                <div><label className="text-contact">TimeStart</label></div>
+                               
+                                <TimePicker minuteStep={30} style={{width: '100%'}} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} />
                             </div>
                             <div className="form-group">
-                                <label className="text-contact">TimeStart</label>
-                                <input
-                                    name="name"
-                                    className="form-control"
-                                    type="text" />
+                                <div><label className="text-contact">TimeEnd</label></div>
+                            
+                                <TimePicker minuteStep={30} style={{width: '100%'}} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} />,
                             </div>
                             <div className="form-group">
-                                <label className="text-contact">TimeEnd</label>
-                                <input
-                                    name="name"
-                                    className="form-control"
-                                    type="text" />
+                                <Checkbox name="checkbox" onChange={this.onChangeCheck} value={this.state.checkbox}></Checkbox>
+                                <label className="text-contact" style={{paddingLeft: '20px'}}>Repeat</label>
                             </div>
-                            <div className="form-group">
-                                <label className="text-contact">Repeat</label>
-                                <input
-                                    name="name"
-                                    className="form-control"
-                                    type="text" />
-                            </div>
-                            <div className="form-group">
-                                <label className="text-contact">Created_at</label>
-                                <input
-                                    name="name"
-                                    className="form-control"
-                                    type="text" />
-                            </div>
-                            <div className="form-group">
-                                <label className="text-contact">Update_at</label>
-                                <input
-                                    name="name"
-                                    className="form-control"
-                                    type="text" />
-                            </div>
+                            
                             <div className="form-group">
                                 <button className="btn btn-success" >Save</button>
                             </div>

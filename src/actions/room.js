@@ -44,9 +44,12 @@ export function requestDeleteRoom(id) {
 }
 // add room
 export function requestAddRoom(data) {
-    let formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('type', data.type);
+    let body = null;
+    body = {
+        id: data.id,
+        name: data.name,
+        type: data.type
+    }
     return (dispatch) => {
         return axios.request({
             method: 'POST',
@@ -55,7 +58,7 @@ export function requestAddRoom(data) {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
             },
-            data: formData
+            data: body
         }).then(function (response) {
             message.success('Bạn Đã Thêm  Thành Công')
             dispatch(receiveData(REQUEST_ADD_ROOM, response.data.data))
@@ -70,29 +73,26 @@ export function receiveData(action, payload) {
 }
 
 //Edit
-export function requestEditRoom(data){
-    let formData = new formData();
-    formData.append('name',data.name);
-    formData.append('type',data.type);
-    return (dispatch)=>{
+export function requestEditRoom(data) {
+    return (dispatch) => {
         return axios.request({
             method: 'PUT',
-            url: `${API_URL}/rooms/${data.id}`,
+            url: `${API_URL}/rooms/${data.id}?name=${data.name}&type=${data.type}`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
             },
-            data: formData
-        }).then(function(response){
-            dispatch(updateData(response.data));
-        }).catch(function(error){
+
+        }).then(function (response) {            
+            dispatch(receiveData(REQUEST_UPDATE_ROOM,response.data.data))
+        }).catch(function (error) {
             console.log(error);
         })
     }
-} 
-export function updateData(response){
-    return{
-        type: REQUEST_UPDATE_ROOM,
-        payload: response
-    }
 }
+// export function updateData(response) {
+//     return {
+//         type: REQUEST_UPDATE_ROOM,
+//         payload: response
+//     }
+// }

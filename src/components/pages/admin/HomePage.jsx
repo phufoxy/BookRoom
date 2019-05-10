@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { HeaderLayout, SiderLayout } from '../../layouts/admin';
-import { DashboardComponent } from '../../shared/admin';
+// import { DashboardComponent } from '../../shared/admin';
 class HomePage extends Component {
     render() {
         return (
@@ -11,7 +11,7 @@ class HomePage extends Component {
                     <SiderLayout></SiderLayout>
                     <div className="right-content">
                         <div className="container-fluid">
-                            <DashboardComponent></DashboardComponent>
+                            
                         </div>
                     </div>
 

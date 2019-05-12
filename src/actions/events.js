@@ -2,6 +2,8 @@ import * as types from '../constants/actionType';
 import * as typeAPI from '../constants/actionAPI';
 import axios from 'axios';
 import { message } from 'antd';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 var moment = require('moment');
 var dateFormat = require('dateformat');
 var now = new Date();
@@ -25,12 +27,11 @@ export function requestGetEvent() {
                         if (moment(data.attributes.daystart + ' ' + data.attributes.timestart).diff(now, 'minutes') < 30) {
                             if (moment(data.attributes.daystart + ' ' + data.attributes.timestart).diff(now, 'minutes') === 30) {
                                 console.log('Còn 30 phút nữa là cuộc họp ');
-                                
+
                                 message.success('Còn 30 phút nữa là cuộc họp ' + data.attributes.content + ' bắt đầu ');
                             }
                             if (moment(data.attributes.daystart + ' ' + data.attributes.timestart).diff(now, 'minutes') === 0) {
-                                console.log('123');
-                                
+
                                 message.success('Cuộc họp ' + data.attributes.content + 'đang bắt đầu ');
                             }
                         }
@@ -45,6 +46,7 @@ export function requestGetEvent() {
 }
 // add tour 
 export function requestAddEvents(data) {
+
     let formDataObject = {};
     if (data.checkbox === true) {
         let arrayDay = '';
@@ -58,7 +60,7 @@ export function requestAddEvents(data) {
         formDataObject = {
             'id_rooms': data.rooms,
             'content': data.title,
-            'nameuser': "vanphu",
+            'nameuser': cookies.get('data').name,
             'daystart': data.dateStart,
             'timestart': data.timestart,
             'timeend': data.timeend,
@@ -71,7 +73,7 @@ export function requestAddEvents(data) {
         formDataObject = {
             'id_rooms': data.rooms,
             'content': data.title,
-            'nameuser': "vanphu",
+            'nameuser': cookies.get('data').name,
             'daystart': data.dateStart,
             'timestart': data.timestart,
             'timeend': data.timeend
@@ -85,10 +87,11 @@ export function requestAddEvents(data) {
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
+                'Authorization': `${'bearer ' + cookies.get('token')}`
             },
             data: formDataObject
         }).then(function (response) {
-            if (response.data === "Đã có cuộc họp được đặt") {
+            if (response.data.original === "Thời gian đặt không hợp lệ") {
                 message.warning('Trùng Lịch Đặt');
             } else {
                 message.success('Thêm Sự Kiện Thành Công');
@@ -108,6 +111,7 @@ export function requestDeleteEvent(id) {
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
+                'Authorization': `${'bearer ' + cookies.get('token')}`
             },
         }).then(function (response) {
             message.success('Xóa Sự Kiện Thành Công');
@@ -135,17 +139,19 @@ export function requestUpdateEvent(data) {
     } else {
         if (data.checkbox === true) {
             let arrayDay = '';
-            data.byweekday.forEach((i, index, item) => {
-                if (index === item.length - 1) {
-                    arrayDay += `${item[index]}`;
-                } else {
-                    arrayDay += `${item[index]},`;
-                }
-            })
+            if (data.byweekday !== null) {
+                data.byweekday.forEach((i, index, item) => {
+                    if (index === item.length - 1) {
+                        arrayDay += `${item[index]}`;
+                    } else {
+                        arrayDay += `${item[index]},`;
+                    }
+                })
+            }
             formDataObject = {
                 'id_rooms': data.rooms,
                 'content': data.title,
-                'nameuser': "vanphu",
+                'nameuser': cookies.get('data').name,
                 'daystart': data.dateStart,
                 'timestart': data.timestart,
                 'timeend': data.timeend,
@@ -159,7 +165,7 @@ export function requestUpdateEvent(data) {
             formDataObject = {
                 'id_rooms': data.rooms,
                 'content': data.title,
-                'nameuser': "vanphu",
+                'nameuser': cookies.get('data').name,
                 'daystart': data.dateStart,
                 'timestart': data.timestart,
                 'timeend': data.timeend,
@@ -176,6 +182,7 @@ export function requestUpdateEvent(data) {
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
+                'Authorization': `${'bearer ' + cookies.get('token')}`
             },
         }).then(function (response) {
             message.success('Sửa Sự Kiện Thành Công');
@@ -199,6 +206,34 @@ export function requestGetEventByRoom(id) {
             },
         }).then(function (response) {
             dispatch(receiveData(types.REQUEST_FILTER_EVENT_ROOM, response.data.data))
+        }).catch(function (error) {
+            dispatch(requestRejected(error));
+        })
+    }
+}
+// research 
+export function requestSearchEvent(data) {
+    let params = {
+        'daystart': data.dateStart,
+        'timestart': data.timestart,
+        'timeend': data.timeend
+    }
+    return (dispatch) => {
+        dispatch(requestLoading());
+        return axios.request({
+            method: 'GET',
+            url: `${typeAPI.API_URL}/getbrbyday`,
+            params,
+            headers: {
+                "Accept": "application/json",
+                'Content-Type': 'application/json',
+            },
+        }).then(function (response) {
+            if (response.data.data.length > 0) {
+                dispatch(receiveData(types.REQUEST_RESEARCH, response.data.data));
+            } else {
+                message.warning('Không có lịch nào trong khoảng thời gian này !!!');
+            }
         }).catch(function (error) {
             dispatch(requestRejected(error));
         })

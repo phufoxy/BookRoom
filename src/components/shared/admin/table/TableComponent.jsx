@@ -1,8 +1,19 @@
 import React, { Component } from 'react';
 import { Modal } from 'antd';
+import Pagination from '../../../../feature/Pagination';
 const confirm = Modal.confirm;
 var dateFormat = require('dateformat');
 class TableComponent extends Component {
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            pageOfItems: [],
+        }
+    }
+    onChangePage = (pageOfItems) => {
+        // update state with new page of items
+        this.setState({ pageOfItems: pageOfItems });
+    }
     onChangerView = () => {
         this.props.onChangerView();
     }
@@ -43,8 +54,7 @@ class TableComponent extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {this
-                                        .props.data.map(data => (
+                                    {this.props.data.map(data => (
                                             <tr key={data.id}>
                                                 <td>{data.id}</td>
                                                 <td>{data.attributes.name}</td>
@@ -69,6 +79,7 @@ class TableComponent extends Component {
                     )
                 case "BOOK":
                     return (
+                        <>
                         <div className="table-responsive">
                             <table className="table">
                                 <thead>
@@ -88,10 +99,7 @@ class TableComponent extends Component {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                {this
-                                        .props
-                                        .data
-                                        .map(data => (
+                                {this.state.pageOfItems.map(data => (
                                             <tr key={data.id}>
                                                 <td>{data.id}</td>
                                                 <td>{data.attributes.content}</td>
@@ -117,6 +125,8 @@ class TableComponent extends Component {
                                 </tbody>
                             </table>
                         </div>
+                        <Pagination items={this.props.data} onChangePage={this.onChangePage}></Pagination>
+                     </>
                     )
                 default:
                     return (
@@ -137,26 +147,7 @@ class TableComponent extends Component {
                             <button className="btn-add" onClick={this.onChangerView}>ADD</button>
                         </div>
                         {contentMain()}
-                        <div className="b-pagination">
-                            <button className="btn-page">
-                                <i className="fas fa-angle-double-left" />
-                            </button>
-                            <button className="btn-page">
-                                <i className="fas fa-chevron-left" />
-                            </button>
-                            <button className="btn-page">1</button>
-                            <button className="btn-page">2</button>
-                            <button className="btn-page">3</button>
-                            <button className="btn-page">4</button>
-                            <button className="btn-page">5</button>
-                            <button className="btn-page">
-                                <i className="fas fa-chevron-right" />
-                            </button>
-                            <button className="btn-page">
-                                <i className="fas fa-angle-double-right" />
-                            </button>
-                        </div>
-
+                       
                     </div>
                 </div>
             </div>

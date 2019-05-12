@@ -32,11 +32,15 @@ export default function (state = INITIAL_STATE, action = {}) {
             return Object.assign({}, state, {
                 all: state.all.filter(item => item.id !== action.payload)
             })
-        case types.REQUEST_UPDATE_EVENT:        
+        case types.REQUEST_UPDATE_EVENT:
             return Object.assign({}, state, {
                 all: state.all.map(data => data.id === action.payload.id ? action.payload : data)
             })
         case types.REQUEST_FILTER_EVENT_ROOM:
+            return Object.assign({}, state, {
+                all: action.payload,
+            })
+        case types.REQUEST_RESEARCH:
             return Object.assign({}, state, {
                 all: action.payload,
             })

@@ -1,6 +1,6 @@
 import React from 'react';
 import { HomePage } from '../components/pages/home';
-import { HomePage as HomeAdminPage, RoomPage,ProfilePage,BookRoomPage } from '../components/pages/admin';
+import { HomePage as HomeAdminPage, RoomPage, ProfilePage, BookRoomPage, EventAdminPage } from '../components/pages/admin';
 import { Route, Switch } from 'react-router-dom';
 const Routes = () => (
     <Switch>
@@ -9,6 +9,7 @@ const Routes = () => (
         <Route path="/admin/room" exact={true} component={RoomPage}></Route>
         <Route path="/admin/profile" exact={true} component={ProfilePage}></Route>
         <Route path="/admin/bookroom" exact={true} component={BookRoomPage}></Route>
+        <Route path="/admin/event" exact={true} component={EventAdminPage}></Route>
     </Switch>
 );
 export default Routes;

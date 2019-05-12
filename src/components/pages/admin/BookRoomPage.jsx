@@ -29,7 +29,7 @@ class BookRoomPage extends Component {
             views: 'LIST'
         })
     }
-    render() {
+    render() {        
         const mainContent = () => {
             switch(this.state.views){
                 case "LIST":
@@ -66,10 +66,8 @@ class BookRoomPage extends Component {
 }
 function mapStateProps(state) {
     return {
-
         data: state.bookroom.all,
         rooms: state.room.all,
-
     }
 }
 export default connect(mapStateProps,{requestGetRoom,requestGetBookRoom,requestDeleteBookRoom,requestAddBookRoom})(BookRoomPage);

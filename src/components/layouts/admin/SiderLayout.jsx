@@ -1,55 +1,80 @@
-import React, {Component} from 'react';
-
+import React, { Component } from 'react';
+import { Link, NavLink } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 class SiderLayout extends Component {
+    onDropdown = (event) => {
+        event.preventDefault();
+    }
     render() {
-        return (
-            <div className="left-menu">
-                <ul className="list-menu">
+        const contentUser = () => {
+            if (cookies.get('data') !== undefined) {
+                let data = cookies.get('data');
+                return (
                     <li>
                         <div className="user-profile">
                             <div className="user-pic">
-                                <img className="img-user" src="../../images/user.jpg" alt="img-user"/></div>
+                                <img className="img-user" src={data.img} alt="img-user" /></div>
                             <div className="user-content">
-                                <a href="/">
-                                    <h5 className="name-title">User Name &nbsp;<i className="fas fa-sort-down"/>
+                                <Link to="/" onClick={this.onDropdown}>
+                                    <h5 className="name-title">{data.name} &nbsp;<i className="fas fa-sort-down" />
                                     </h5>
-                                    <span className="user-email text-muted">user@gmail.com</span>
-                                </a>
+                                    <span className="user-email text-muted">{data.email}</span>
+                                </Link>
                             </div>
                         </div>
                     </li>
+                )
+            } else {
+                return (
+                    <></>
+                )
+            }
+        }
+        return (
+            <div className="left-menu">
+                <ul className="list-menu">
+                    {contentUser()}
                     <li className="item-btn">
-                        <a className="btn-create" href="/admin/room">
-                            <i className="fas fa-plus"/>&nbsp;
+                        <Link className="btn-create" to="/admin/room">
+                            <i className="fas fa-plus" />&nbsp;
                             <span className="hide-menu">Create New</span>
-                        </a>
+                        </Link>
                     </li>
                     <li className="item-menu ">
-                        <a className="item-link active waves-effect waves-dark" href="/admin" >
-                            <i className="fas fa-database"/>
-                            <span className="hide-menu">Dashboard</span>
-                        </a>
+                        <NavLink to="/admin" exact={true} activeClassName='active' className="item-link waves-effect waves-dark">
+                            <i className="fas fa-database" />
+                            <span className="hide-menu">Admin</span>
+                        </NavLink>
+
                     </li>
                     <li className="item-menu ">
-                        <a className="item-link waves-effect waves-dark" href="/admin/profile" >
-                            <i className="fas fa-users"/>
-                            <span className="hide-menu">Profile</span>
-                        </a>
+                        <NavLink to="/admin/profile" exact={true} activeClassName='active' className="item-link waves-effect waves-dark">
+                            <i className="fas fa-users" />
+                            <span className="hide-menu">Thông Tin User</span>
+                        </NavLink>
+
                     </li>
                     <li className="item-menu">
-                        <a className="item-link waves-effect waves-dark" href="/admin/room">
-                            <i className="fas fa-table"/>
-                            <span className="hide-menu">Table Room</span>
-                        </a>
+                        <NavLink className="item-link waves-effect waves-dark" exact={true} activeClassName='active' to="/admin/room">
+                            <i className="fas fa-table" />
+                            <span className="hide-menu">Danh Sách Phòng</span>
+                        </NavLink>
                     </li>
                     <li className="item-menu">
-                        <a className="item-link waves-effect waves-dark" href="/admin/bookroom">
-                            <i className="fas fa-table"/>
-                            <span className="hide-menu">Book Room</span>
-                        </a>
+                        <NavLink className="item-link waves-effect waves-dark" exact={true} activeClassName='active' to="/admin/bookroom">
+                            <i className="fas fa-table" />
+                            <span className="hide-menu">Danh Sách Đặt Phòng</span>
+                        </NavLink>
+                    </li>
+                    <li className="item-menu">
+                        <NavLink className="item-link waves-effect waves-dark" exact={true} activeClassName='active' to="/admin/event">
+                            <i className="fas fa-table" />
+                            <span className="hide-menu">Đặt Phòng</span>
+                        </NavLink>
                     </li>
                     <li className="text-center">
-                        <a href="/" className="link-upgrade">Upgrade to pro</a>
+                        <NavLink to="/" className="link-upgrade">Upgrade to pro</NavLink>
                     </li>
                 </ul>
             </div>

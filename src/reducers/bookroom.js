@@ -20,6 +20,11 @@ export default function(state = INTINIAL_STATE, action = {}){
             return Object.assign({},state,{
                 all: [...state.all,action.payload]
             })
+
+        case types.REQUEST_UPDATE_BOOKROOM:
+            return Object.assign({},state,{
+                all: state.all.map(data => data.id === action.payload.id ? action.payload : data)
+            })
         default:
             return state;
     }

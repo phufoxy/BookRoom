@@ -4,6 +4,11 @@ import { HeaderLayout, SiderLayout,FooterLayout } from '../../layouts/admin';
 import { TableComponent,FormComponent } from '../../shared/admin';
 import {requestGetBookRoom,requestDeleteBookRoom,requestAddBookRoom} from '../../../actions/bookroom';
 import {requestGetRoom} from '../../../actions/room';
+// import Cookies from 'universal-cookie';
+// import { Modal } from 'antd';
+// import { message } from 'antd';
+// const cookies = new Cookies();
+// const confirm = Modal.confirm;
 class BookRoomPage extends Component {
     constructor(props){
         super(props);

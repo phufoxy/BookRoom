@@ -2,7 +2,8 @@ import axios from 'axios';
 import { message } from 'antd';
 import * as types from '../constants/actionType';
 import * as API from '../constants/actionAPI';
-
+import Cookies from 'universal-cookie';
+const cookies = new Cookies();
 export function requestGetBookRoom(){
     return (dispatch)=>{
         return axios.request({
@@ -28,6 +29,7 @@ export function requestDeleteBookRoom(id){
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
+                'Authorization': `${'bearer ' + cookies.get('token')}`
             }
         }).then(function(response){
             message.success("Bạn đã xóa thành công");
@@ -57,10 +59,11 @@ export function requestAddBookRoom(data){
             headers:{
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
+                'Authorization': `${'bearer ' + cookies.get('token')}`
             },
             data: formData,
         }).then(function(response){
-            if(response.data === "Đã có cuộc họp được đặt"){
+            if(response.data.original === "Thời gian đặt không hợp lệ"){
                 message.warning("Phòng đang họp");
             }else{
                 message.success("Thêm phòng thành công");
@@ -73,6 +76,7 @@ export function requestAddBookRoom(data){
         })
     }
 }
+
 export function receiveData(action, payload) {
     return { type: action, payload };
 }

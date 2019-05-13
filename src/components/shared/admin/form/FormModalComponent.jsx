@@ -58,6 +58,7 @@ class FormModalComponent extends Component {
                     byweekday: data.repeat === null ? ['su', 'mo'] : data.repeat.byweekday
                 })
             } else {
+                this.onReset();
                 this.setState({
                     visible: this.props.visible
                 })

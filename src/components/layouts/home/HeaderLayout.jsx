@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Modal } from 'antd';
+import { Modal, message } from 'antd';
 import { connect } from 'react-redux'
-import { GoogleLogin } from 'react-google-login';
+import { GoogleLogin, GoogleLogout } from 'react-google-login';
 import Cookies from 'universal-cookie';
 import * as action from '../../../actions/login';
 import { Redirect } from 'react-router-dom';
@@ -75,10 +75,28 @@ class HeaderLayout extends Component {
         this.wrapperRef = node;
     }
     onRedirect = () => {
+        if (cookies.get('data') !== undefined) {
+            if (cookies.get('data').attributes.roles[0] !== 'super_admin') {
+                this.onMessager()
+            }
+            else {
+                this.setState({
+                    isRedirect: !this.state.isRedirect
+                })
+            }
+        }
+    }
+    onMessager = () => {
+        message.warning('Bạn không phải Admin');
+
+    }
+    logoutGoogle = () => {
+        this.props.dispatch(action.requestLogout(cookies.remove('accessToken')));
         this.setState({
-            isRedirect: !this.state.isRedirect
+            isLogout: true
         })
     }
+
     render() {
         if (this.state.isRedirect) {
             return (
@@ -93,12 +111,18 @@ class HeaderLayout extends Component {
                             <button className="b-btn" onClick={this.onRedirect}><i className="fas fa-cog" /></button>
                         </li>
                         <li className={this.state.is_dropdown ? "b-item b-dropdown is-active" : "b-item b-dropdown"}>
-                            <button className="b-btn" onClick={this.onShowLogout}><i className="fas fa-user" /> Xin Chào, {this.props.user.name}</button>
+                            <button className="b-btn" onClick={this.onShowLogout}><i className="fas fa-user" /> Xin Chào, {cookies.get('data').attributes.name}</button>
                             <div className="b-hash-menu">
                                 <div className="b-logout">
-                                    <button className="b-btn" onClick={this.logout}>
+                                    <GoogleLogout
+                                        clientId="748712237748-u625dabsn5e95cohlu9m31lt765cbvin.apps.googleusercontent.com"
+                                        buttonText="Đăng Xuất"
+                                        onLogoutSuccess={this.logoutGoogle}
+                                        className="b-logout"
+                                    />
+                                    {/* <button className="b-btn" onClick={this.logout}>
                                         <i className="fas fa-sign-out-alt"></i> Logout
-                                </button>
+                                </button> */}
                                 </div>
                             </div>
                         </li>
@@ -143,7 +167,9 @@ class HeaderLayout extends Component {
                                 Đăng Nhập
                             </h2>
                         </div>
-                        <div className="b-content">
+                        <div className="b-content" style={{
+                            width: '100%'
+                        }}>
                             <GoogleLogin
                                 clientId="748712237748-u625dabsn5e95cohlu9m31lt765cbvin.apps.googleusercontent.com"
                                 scope="https://www.googleapis.com/auth/analytics"
@@ -155,6 +181,7 @@ class HeaderLayout extends Component {
                                 responseType="id_token"
                                 isSignedIn
                                 theme="dark"
+                                className="b-google"
                             />
 
                         </div>
@@ -168,9 +195,9 @@ class HeaderLayout extends Component {
                     </div>
                     <div className="b-block-right">
                         <div className="b-list-item">
-                            <li className="b-item">
+                            {/* <li className="b-item">
                                 <button className="b-btn"><i className="fas fa-bell" /></button>
-                            </li>
+                            </li> */}
 
                             {contentLogout()}
 

@@ -66,7 +66,8 @@ class FullcalenderComponent extends Component {
             id: info.event.id,
             redate: info.event.extendedProps.redate,
             recount: info.event.extendedProps.recount,
-            reweek: info.event.extendedProps.reweek
+            reweek: info.event.extendedProps.reweek,
+            user_id: info.event.extendedProps.user_id
         })
 
     }
@@ -85,7 +86,7 @@ class FullcalenderComponent extends Component {
             show: false,
         });
     }
-    onDelete(id) {
+    onDelete(id, user_id) {
         var self = this.props;
         confirm({
             title: 'Bạn Muốn Xóa Sự Kiện?',
@@ -94,7 +95,12 @@ class FullcalenderComponent extends Component {
                 if (cookies.get('data') === undefined) {
                     message.warning('Vui Lòng Đăng Nhập Để Xóa Sự Kiện !')
                 } else {
-                    self.onDelete(id);
+                    if (parseInt(user_id) === parseInt(cookies.get('data').id)) {
+                        self.onDelete(id);
+                    } else {
+                        message.warning('Bạn không có quyền xóa sự kiện này !')
+                    }
+
                 }
             },
             onCancel() {
@@ -105,7 +111,7 @@ class FullcalenderComponent extends Component {
             show: !this.state.show
         })
     }
-    onEdit(id) {
+    onEdit(id, user_id) {
         var self = this.props;
         confirm({
             title: 'Bạn Muốn Sửa Sự Kiện?',
@@ -114,7 +120,11 @@ class FullcalenderComponent extends Component {
                 if (cookies.get('data') === undefined) {
                     message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')
                 } else {
-                    self.onEdit(id);
+                    if (parseInt(user_id) === parseInt(cookies.get('data').id)) {
+                        self.onEdit(id);
+                    } else {
+                        message.warning('Bạn không có quyền xóa sự kiện này !')
+                    }
                 }
             },
             onCancel() {
@@ -162,12 +172,12 @@ class FullcalenderComponent extends Component {
                     <div className="b-events">
                         <div className="b-button-funtion">
                             <div className="b-item">
-                                <button className="b-btn" onClick={this.onEdit.bind(this, this.state.id)}>
+                                <button className="b-btn" onClick={this.onEdit.bind(this, this.state.id, this.state.user_id)}>
                                     <i className="fas fa-pencil-alt" />
                                 </button>
                             </div>
                             <div className="b-item">
-                                <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id)}>
+                                <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id, this.state.user_id)}>
                                     <i className="far fa-trash-alt" />
                                 </button>
                             </div>

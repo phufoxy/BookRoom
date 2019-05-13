@@ -117,13 +117,14 @@ class HomePage extends Component {
             arrB = arrA.map(item => {
                 let attributes = item.attributes;
                 return {
-                    resourceId: attributes.id_rooms,
+                    resourceId: attributes.room_id,
                     id: item.id,
                     title: attributes.content,
-                    className: attributes.id_rooms === 1 ? "SMALL" : "BIG",
+                    className: "room_" + attributes.room_id,
                     start: attributes.daystart,
-                    room: attributes.id_rooms === 1 ? "Phòng Nhỏ" : "Phòng Lớn",
-                    user: attributes.nameuser,
+                    room: attributes.room_name,
+                    user: attributes.username,
+                    user_id: attributes.user_id,
                     timestart: attributes.timestart,
                     timeend: attributes.timeend,
                     redate: attributes && attributes.repeat !== null ? attributes.repeat.repeatby : 'Không Lặp',

@@ -30,9 +30,9 @@ export function requestGetLogin(data) {
                     }
                 }).then(function (response) {
                     if (response) {
-                        cookies.set('data', response.data);
+                        cookies.set('data', response.data.data);
                         message.success('Đăng Nhập Thành Công !!');
-                        dispatch(receiveData(types.REQUEST_LOGIN, response.data))
+                        dispatch(receiveData(types.REQUEST_LOGIN, response.data.data))
                     }
                 })
             }
@@ -59,6 +59,7 @@ export function requestLogout(data) {
         }).then(function (response) {
             cookies.remove('token');
             cookies.remove('data');
+            cookies.remove('accessToken');
             message.success('Đăng Xuất Thành Công!');
             dispatch(receiveData(types.REQUEST_LOGOUT, response))
         }).catch(function (error) {

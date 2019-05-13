@@ -92,21 +92,18 @@ class SlideBar extends Component {
     if (cookies.get('data') === undefined) {
       message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')
     } else {
+      this.onReset();
       this.setState({
         visible: true
       })
     }
   }
   handleOk = (e) => {
-    this.setState({
-      visible: false,
-    });
+    this.onReset();
   }
 
-  handleCancel = (e) => {
-    this.setState({
-      visible: false,
-    });
+  handleCancel = () => {
+    this.onReset();
     this.props.onCancleEdit();
   }
   onChanger = (event) => {
@@ -148,18 +145,11 @@ class SlideBar extends Component {
     event.preventDefault();
     if (this.props.edit === true) {
       this.props.onUpdate(this.state);
-      this.onReset();
-      this.setState({
-        visible: false
-      })
+      this.props.onCancleEdit();      
     } else {
       this.props.onAddEvent(this.state)
-      this.onReset();
-      this.setState({
-        visible: false
-      })
     }
-
+    this.onReset();
   }
   onChangerCheck = (e) => {
     this.setState({
@@ -175,11 +165,22 @@ class SlideBar extends Component {
   onGetDate = (data) => {
     this.props.onGetDate(data);
   }
-  onReset() {
+  onReset() {    
     this.setState({
+      visible: false,
+      calender: [],
       title: '',
-      choice: 'daily',
+      dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
+      rooms: 1,
+      timestart: '08:30',
+      timeend: '09:30',
       checkbox: false,
+      byweekday: ['su', 'mo'],
+      count: 1,
+      choice: 'daily',
+      value: 0,
+      formErrors: { title: '' },
+      titleValid: false,
     })
   }
   onChange = (date, dateString) => {
@@ -217,7 +218,7 @@ class SlideBar extends Component {
             <div className="b-heading">
               <h2 className="b-text-title">
                 ĐẶT LỊCH PHÒNG HỌP
-                            </h2>
+              </h2>
             </div>
             <div className="b-content">
               <form className="b-form" onSubmit={this.onSubmit}>

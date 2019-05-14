@@ -22,3 +22,5 @@ export const REQUEST_LOGOUT = "REQUEST_LOGOUT";
 export const REQUEST_CHECK_LOGIN = "REQUEST_CHECK_LOGIN";
 // export research
 export const REQUEST_RESEARCH = "REQUEST_RESEARCH";
+//export user
+export const REQUEST_GET_USERS = "REQUEST_GET_USERS";

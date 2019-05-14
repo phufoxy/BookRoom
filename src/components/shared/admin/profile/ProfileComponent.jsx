@@ -16,9 +16,9 @@ class ProfileComponent extends Component {
                         <div className="b-card">
                             <div className="card-body">
                                 <div className="card-user text-center">
-                                    <img src={data.img} className="img-user" alt="profile" />
-                                    <h3 className="title-name">{data.name}</h3>
-                                    <h6 className="card-subtitle">{data.email}</h6>
+                                    <img src={data.attributes.img} className="img-user" alt="profile" />
+                                    <h3 className="title-name">{data.attributes.name}</h3>
+                                    <h6 className="card-subtitle">{data.attributes.email}</h6>
                                     <div className="link-text">
                                         <a className="link" href="/">254</a>
                                         <a className="link" href="/">54</a>
@@ -28,7 +28,7 @@ class ProfileComponent extends Component {
                             <hr />
                             <div className="card-body">
                                 <small className="text-muted">Email address</small>
-                                <h6 className="text">{data.email}</h6>
+                                <h6 className="text">{data.attributes.email}</h6>
                                 <small className="text-muted">Phone</small>
                                 <h6 className="text">0935489063</h6>
                                 <small className="text-muted">Address</small>

@@ -65,7 +65,7 @@ class SiderLayout extends Component {
                     <li className="item-menu">
                         <NavLink className="item-link waves-effect waves-dark" exact={true} activeClassName='active' to="/admin/bookroom">
                             <i className="fas fa-table" />
-                            <span className="hide-menu">Danh Sách Đặt Phòng</span>
+                            <span className="hide-menu">Danh Sách User</span>
                         </NavLink>
                     </li>
                     <li className="item-menu">

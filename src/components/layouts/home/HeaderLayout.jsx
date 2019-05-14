@@ -41,6 +41,8 @@ class HeaderLayout extends Component {
         });
     }
     responseGoogle = (response) => {
+        console.log(response);
+        
         if (response) {
             this.props.dispatch(action.requestGetLogin(response.accessToken))
             cookies.set('accessToken', response.accessToken);

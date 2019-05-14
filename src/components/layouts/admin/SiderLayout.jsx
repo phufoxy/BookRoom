@@ -6,7 +6,7 @@ class SiderLayout extends Component {
     onDropdown = (event) => {
         event.preventDefault();
     }
-    render() {
+    render() {        
         const contentUser = () => {
             if (cookies.get('data') !== undefined) {
                 let data = cookies.get('data');
@@ -14,12 +14,12 @@ class SiderLayout extends Component {
                     <li>
                         <div className="user-profile">
                             <div className="user-pic">
-                                <img className="img-user" src={data.img} alt="img-user" /></div>
+                                <img className="img-user" src={data.attributes.img === null ? 'https://img.icons8.com/bubbles/2x/system-administrator-female.png' : data.img} alt="img-user" /></div>
                             <div className="user-content">
                                 <Link to="/" onClick={this.onDropdown}>
-                                    <h5 className="name-title">{data.name} &nbsp;<i className="fas fa-sort-down" />
+                                    <h5 className="name-title">{data.attributes.name} &nbsp;<i className="fas fa-sort-down" />
                                     </h5>
-                                    <span className="user-email text-muted">{data.email}</span>
+                                    <span className="user-email text-muted">{data.attributes.email}</span>
                                 </Link>
                             </div>
                         </div>
@@ -32,6 +32,7 @@ class SiderLayout extends Component {
             }
         }
         return (
+
             <div className="left-menu">
                 <ul className="list-menu">
                     {contentUser()}

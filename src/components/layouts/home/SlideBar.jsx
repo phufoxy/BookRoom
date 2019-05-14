@@ -202,6 +202,7 @@ class SlideBar extends Component {
 
   }
   render() {
+    
     return (
       <div className="b-block-left">
         <div className="b-group-btn">

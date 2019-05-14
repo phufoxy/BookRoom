@@ -80,51 +80,8 @@ class TableComponent extends Component {
                 case "BOOK":
                     return (
                         <>
-                        <div className="table-responsive">
-                            <table className="table">
-                                <thead>
-                                    <tr className="bg-table">
-                                        <th>ID</th>
-                                        <th>Content</th>
-                                        <th>Id_Room</th>
-                                        <th>NameUser</th>
-                                        <th>DayStart</th>
-                                        <th>TimeStart</th>
-                                        <th>TimeEnd</th>
-                                        <th>Repeat</th>
-                                        <th>Created_at</th>
-                                        <th>Update_at</th>
-                                        <th>Edit</th>
-                                        <th>Delete</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {this.state.pageOfItems.map(data => (
-                                            <tr key={data.id}>
-                                                <td>{data.id}</td>
-                                                <td>{data.attributes.content}</td>
-                                                <td>{data.attributes.id_rooms}</td>
-                                                <td>{data.attributes.nameuser}</td>
-                                                <td>{data.attributes.daystart}</td>
-                                                <td>{data.attributes.timestart}</td>
-                                                <td>{data.attributes.timeend}</td>
-                                                <td>{data.attributes.repeat}</td>
-                                                <td>{dateFormat(data.attributes.created_at, "yyyy-mm-dd hh:MM:ss")}</td>
-                                                <td>{dateFormat(data.attributes.updated_at, "yyyy-mm-dd hh:MM:ss")}</td>
-                                                <td>
-                                                    <button className="btn_edit">Edit</button>&nbsp;
+                      
         
-                                                </td>
-                                                <td>
-                                                    <button className="btn_dele" onClick={this.onDelete.bind(this,data.id)}>Delete</button>
-                                                </td>
-                                            </tr>
-
-                                        ))
-                                }
-                                </tbody>
-                            </table>
-                        </div>
                         <Pagination items={this.props.data} onChangePage={this.onChangePage}></Pagination>
                      </>
                     )

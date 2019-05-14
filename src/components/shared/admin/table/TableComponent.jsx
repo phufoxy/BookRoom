@@ -40,6 +40,18 @@ class TableComponent extends Component {
             switch (this.props.choice) {
                 case "ROOM":
                     return (
+                        <div className="card-body">
+                        <div className="header-card">
+                            <div>
+                                <h4 className="card-title">Top Selling Products</h4>
+                            </div>
+                        </div>
+                        <div className="add-product">
+                            <button className="btn-add" onClick={this.onChangerView}>ADD</button>
+                        </div>
+                       
+                       
+                 
                         <div className="table-responsive">
                             <table className="table">
                                 <thead>
@@ -76,12 +88,49 @@ class TableComponent extends Component {
                                 </tbody>
                             </table>
                         </div>
+                        </div>
                     )
-                case "BOOK":
+                case "USER":
                     return (
                         <>
-                      
-        
+                            <div className="card-body">
+                                <div className="header-card">
+                                    <div>
+                                        <h4 className="card-title">User</h4>
+                                    </div>
+                                </div>
+                        
+                                <div className="table-responsive">
+                                    <table className="table">
+                                        <thead>
+                                            <tr className="bg-table">
+                                            <th>ID</th>
+                                            <th>Username</th>
+                                            <th>Email Address</th>
+                                            <th>Roles</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            
+                                            {
+                                                this.props.data.map(data => (
+                                                    <tr key={data.id}>
+                                                        <td>{data.id}</td>
+                                                        <td >
+                                                            <div className="product-name">
+                                                                <img className="link-name" src={data.attributes.img} alt="alt-user"/>
+                                                                <h4 className="b-text">{data.attributes.name}</h4>
+                                                            </div>
+                                                        </td>
+                                                        <td>{data.attributes.email}</td>
+                                                        <td>{data.attributes.roles}</td>
+                                                    </tr>
+                                                ))
+                                            }
+                                        </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                         <Pagination items={this.props.data} onChangePage={this.onChangePage}></Pagination>
                      </>
                     )
@@ -94,18 +143,8 @@ class TableComponent extends Component {
         return (
             <div className="add-form">
                 <div className="container-fluid">
-                    <div className="card-body">
-                        <div className="header-card">
-                            <div>
-                                <h4 className="card-title">Top Selling Products</h4>
-                            </div>
-                        </div>
-                        <div className="add-product">
-                            <button className="btn-add" onClick={this.onChangerView}>ADD</button>
-                        </div>
-                        {contentMain()}
-                       
-                    </div>
+                    
+                    {contentMain()}
                 </div>
             </div>
         );

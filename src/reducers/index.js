@@ -1,12 +1,13 @@
 import { combineReducers } from 'redux';
 import EventReducer from './events';
 import RoomReducer from './room';
-import BookRoomReducer from './bookroom';
+
 import LoginReducer from './login';
+import UserReducer from './user'
 const rootReducer = combineReducers({
     event: EventReducer,
     room: RoomReducer,
-    bookroom: BookRoomReducer,
-    login: LoginReducer
+    login: LoginReducer,
+    user: UserReducer
 });
 export default rootReducer;

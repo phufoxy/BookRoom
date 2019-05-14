@@ -64,11 +64,15 @@ class FormModalComponent extends Component {
                 })
             }
         }
-
     }
     onChanger = (event) => {
         this.setState({
             [event.target.name]: event.target.value
+        })
+    }
+    handleChange = (value) => {
+        this.setState({
+            byweekday: value
         })
     }
     onChange = (date, dateString) => {
@@ -129,8 +133,6 @@ class FormModalComponent extends Component {
         })
         this.props.onSearchEvent(this.state);
         this.props.onCheckModal();
-
-
     }
     onReset() {
         this.setState({

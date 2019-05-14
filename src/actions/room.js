@@ -13,7 +13,7 @@ export function requestGetRoom() {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
             },
-        }).then(function (response) {
+        }).then(function (response) {            
             dispatch(receiveData(types.REQUEST_GET_ROOMS, response.data.data))
         }).catch(function (error) {
 
@@ -25,7 +25,7 @@ export function requestDeleteRoom(id) {
     return (dispatch) => {
         return axios.request({
             method: 'DELETE',
-            url: `${API.API_URL}/rooms/${id}`,
+            url: `${API.API_URL}/admin/rooms/${id}`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -42,16 +42,16 @@ export function requestDeleteRoom(id) {
 }
 // add room
 export function requestAddRoom(data) {
+
     let body = null;
     body = {
-        id: data.id,
         name: data.name,
         type: data.type
     }
     return (dispatch) => {
         return axios.request({
             method: 'POST',
-            url: `${API.API_URL}/rooms`,
+            url: `${API.API_URL}/admin/rooms`,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
@@ -72,18 +72,26 @@ export function receiveData(action, payload) {
 }
 
 //Edit
-export function requestEditRoom(data) {    
+export function requestEditRoom(data) {
+    let params = {
+        'name': data.name,
+        'type': data.type
+    }
     return (dispatch) => {
         return axios.request({
             method: 'PUT',
-            url: `${API.API_URL}/rooms/${data.id}?name=${data.name}&type=${data.type}`,
+            url: `${API.API_URL}/admin/rooms/${data.id}`,
+            params,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
                 'Authorization': `${'bearer ' + cookies.get('token')}`
             },
 
-        }).then(function (response) {            
+        }).then(function (response) {
+            message.success('Sửa Thành Công!');
+            console.log(response.data);
+            
             dispatch(receiveData(types.REQUEST_UPDATE_ROOM, response.data))
         }).catch(function (error) {
             console.log(error);

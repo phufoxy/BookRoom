@@ -23,16 +23,19 @@
 .booked {
   background: green;
 }
-.SMALL {
+.room_1 {
   background: #e7e1e2;
 }
-.BIG {
+.room_2 {
   background: #dae2eb;
+}
+.room_3 {
+  background-color: #efefef;
 }
 .MEDIUM {
   background-color: #4c4c4c;
 }
-.fc-unthemed{
+.fc-unthemed {
   background-color: #fff;
 }
 .ant-modal-close {
@@ -61,7 +64,13 @@
   color: #4c4c4c !important;
   padding-left: 5px;
 }
-.fc-event{
+.fc-event {
   border: none;
-  box-shadow:  0 0 8px -2px rgba(0, 0, 0, 0.45);
+  box-shadow: 0 0 8px -2px rgba(0, 0, 0, 0.45);
+}
+.b-google {
+  width: 100%;
+}
+.b-logout {
+  width: 100%;
 }

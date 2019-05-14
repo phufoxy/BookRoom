@@ -34,13 +34,13 @@ class EventAdminPage extends Component {
             arrB = arrA.map(item => {
                 let attributes = item.attributes;
                 return {
-                    resourceId: attributes.id_rooms,
+                    resourceId: attributes.room_id,
                     id: item.id,
                     title: attributes.content,
-                    className: attributes.id_rooms === 1 ? "SMALL" : "BIG",
+                    className: attributes.room_id === 1 ? "SMALL" : "BIG",
                     start: attributes.daystart,
-                    room: attributes.id_rooms === 1 ? "Phòng Nhỏ" : "Phòng Lớn",
-                    user: attributes.nameuser,
+                    room: attributes.room_id === 1 ? "Phòng Nhỏ" : "Phòng Lớn",
+                    user: attributes.username,
                     timestart: attributes.timestart,
                     timeend: attributes.timeend,
                     redate: attributes && attributes.repeat !== null ? attributes.repeat.repeatby : 'Không Lặp',
@@ -123,6 +123,7 @@ class EventAdminPage extends Component {
         }
     }
     onShowModal = () => {
+        this.onResetView();
         this.setState({
             visible: true,
             edit: false,
@@ -163,10 +164,15 @@ class EventAdminPage extends Component {
             onDate: data.dateStart
         })
     }
+    onResetView = () => {
+        this.setState({
+            views: 'VIEW'
+        })
+    }
     render() {
         return (
             <div className="wrapper">
-                <FormModalComponent onSearchEvent={this.onSearchEvent} views={this.state.views} onCheckModal={this.onCheckModal} visible={this.state.visible} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onAddEvent={this.onAddEvent} room={this.convertArrayRoom(this.props.room)}></FormModalComponent>
+                <FormModalComponent  onSearchEvent={this.onSearchEvent} views={this.state.views} onCheckModal={this.onCheckModal} visible={this.state.visible} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onAddEvent={this.onAddEvent} room={this.convertArrayRoom(this.props.room)}></FormModalComponent>
                 <HeaderLayout></HeaderLayout>
                 <section className="b-dashboard-content">
                     <SiderLayout></SiderLayout>

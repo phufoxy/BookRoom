@@ -46,7 +46,6 @@ export function requestGetEvent() {
 }
 // add tour 
 export function requestAddEvents(data) {
-
     let formDataObject = {};
     if (data.checkbox === true) {
         let arrayDay = '';
@@ -58,9 +57,9 @@ export function requestAddEvents(data) {
             }
         })
         formDataObject = {
-            'id_rooms': data.rooms,
+            'room_id': data.rooms,
             'content': data.title,
-            'nameuser': cookies.get('data').name,
+            'user_id': cookies.get('data').id,
             'daystart': data.dateStart,
             'timestart': data.timestart,
             'timeend': data.timeend,
@@ -71,14 +70,13 @@ export function requestAddEvents(data) {
         }
     } else {
         formDataObject = {
-            'id_rooms': data.rooms,
+            'room_id': data.rooms,
             'content': data.title,
-            'nameuser': cookies.get('data').name,
+            'user_id': cookies.get('data').id,
             'daystart': data.dateStart,
             'timestart': data.timestart,
             'timeend': data.timeend
         }
-
     }
     return (dispatch) => {
         return axios.request({
@@ -149,9 +147,9 @@ export function requestUpdateEvent(data) {
                 })
             }
             formDataObject = {
-                'id_rooms': data.rooms,
+                'room_id': data.rooms,
                 'content': data.title,
-                'nameuser': cookies.get('data').name,
+                'user_id': cookies.get('data').name,
                 'daystart': data.dateStart,
                 'timestart': data.timestart,
                 'timeend': data.timeend,
@@ -163,9 +161,9 @@ export function requestUpdateEvent(data) {
             }
         } else {
             formDataObject = {
-                'id_rooms': data.rooms,
+                'room_id': data.rooms,
                 'content': data.title,
-                'nameuser': cookies.get('data').name,
+                'user_id': cookies.get('data').name,
                 'daystart': data.dateStart,
                 'timestart': data.timestart,
                 'timeend': data.timeend,
@@ -222,11 +220,12 @@ export function requestSearchEvent(data) {
         dispatch(requestLoading());
         return axios.request({
             method: 'GET',
-            url: `${typeAPI.API_URL}/getbrbyday`,
+            url: `${typeAPI.API_URL}/admin/getbrbyday`,
             params,
             headers: {
                 "Accept": "application/json",
                 'Content-Type': 'application/json',
+                'Authorization': `${'bearer ' + cookies.get('token')}`
             },
         }).then(function (response) {
             if (response.data.data.length > 0) {

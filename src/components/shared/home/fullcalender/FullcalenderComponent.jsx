@@ -8,7 +8,7 @@ import interactionPlugin from '@fullcalendar/interaction' // needed for dayClick
 import resourceTimeGridPlugin from '@fullcalendar/resource-timegrid';
 import allLocales from '@fullcalendar/core/locales-all';
 import '../../../../main.scss'
-import { Modal } from 'antd';
+import { Modal, Calendar } from 'antd';
 import Cookies from 'universal-cookie';
 import { message } from 'antd';
 const cookies = new Cookies();
@@ -38,8 +38,8 @@ class FullcalenderComponent extends Component {
             show: false,
             title: '',
             description: '',
-            datenow: now
-
+            datenow: now,
+            isShowCalender: false,
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -146,7 +146,17 @@ class FullcalenderComponent extends Component {
             timeEnd: dateFormat(info.event.end, 'HH:MM'),
             is_resize: true
         }
-        this.props.onUpdate(data);
+        if (cookies.get('data') === undefined) {
+            message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')
+        } else {
+            if (parseInt(info.event.extendedProps.user_id) === parseInt(cookies.get('data').id)) {
+                this.props.onUpdate(data);
+            } else {
+                info.revert();
+                message.warning('Bạn không có quyền Sửa sự kiện này !')
+            }
+        }
+
     }
     oneventDrop = (eventDropInfo) => {
         let data = {
@@ -157,36 +167,90 @@ class FullcalenderComponent extends Component {
             is_resize: true,
             is_drop: true
         }
-        this.props.onUpdate(data);
+        if (cookies.get('data') === undefined) {
+            message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')
+        } else {
+            if (parseInt(eventDropInfo.event.extendedProps.user_id) === parseInt(cookies.get('data').id)) {
+                this.props.onUpdate(data);
+            } else {
+                eventDropInfo.revert();
+                message.warning('Bạn không có quyền Sửa sự kiện này !')
+            }
+        }
+
+    }
+    onShowCalender = () => {
+        this.setState({
+            isShowCalender: !this.state.isShowCalender
+        })
+
+    }
+    onCloseCanlender = () => {
+        this.setState({
+            isShowCalender: false
+        })
+    }
+    onSelect = (event) => {
+        let calendarApi = this.calendarComponentRef.current.getApi()
+        calendarApi.gotoDate(dateFormat(event._d, 'yyyy-mm-dd'))
+        this.setState({
+            isShowCalender: false
+        })
+    }
+    onCloseModal = () => {
+        this.setState({
+            show: false
+        })
     }
     render() {
         return (
             <div className="b-fullcalender">
                 <Modal
                     header={null}
+                    visible={this.state.isShowCalender}
+                    onOk={this.handleOk}
+                    onCancel={this.onCloseCanlender}
+                    footer={null}>
+                    <div className="b-events">
+                        <Calendar fullscreen={false} onSelect={this.onSelect} />
+                    </div>
+                </Modal>
+                <Modal
+                    header={null}
                     visible={this.state.show}
                     onOk={this.handleOk}
-                    onCancel={this.handleCancel}
+                    // onCancel={this.handleCancel}
                     footer={null}
+                    closable={false}
                 >
                     <div className="b-events">
-                        <div className="b-button-funtion">
-                            <div className="b-item">
-                                <button className="b-btn" onClick={this.onEdit.bind(this, this.state.id, this.state.user_id)}>
-                                    <i className="fas fa-pencil-alt" />
-                                </button>
+                        {cookies.get('data') !== undefined && parseInt(this.state.user_id) === parseInt(cookies.get('data').id) ?
+                            <div className="b-button-funtion">
+                                <div className="b-item">
+                                    <button className="b-btn" onClick={this.onEdit.bind(this, this.state.id, this.state.user_id)}>
+                                        <i className="fas fa-pencil-alt" />
+                                    </button>
+                                </div>
+                                <div className="b-item">
+                                    <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id, this.state.user_id)}>
+                                        <i className="far fa-trash-alt" />
+                                    </button>
+                                </div>
+                                <div className="b-item" onClick={this.onCloseModal}>
+                                    <button className="b-btn">
+                                        <i className="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div> :
+                            <div className="b-button-funtion">
+                                <div className="b-item">
+                                    <button className="b-btn" onClick={this.onCloseModal}>
+                                        <i className="fas fa-times"></i>
+                                    </button>
+                                </div>
                             </div>
-                            <div className="b-item">
-                                <button className="b-btn" onClick={this.onDelete.bind(this, this.state.id, this.state.user_id)}>
-                                    <i className="far fa-trash-alt" />
-                                </button>
-                            </div>
-                            <div className="b-item">
-                                <button className="b-btn">
-                                    <i className="fas fa-ellipsis-v"></i>
-                                </button>
-                            </div>
-                        </div>
+                        }
+
                         <div className="b-content">
                             <h2 className="b-text-title">
                                 [{this.state.title}]
@@ -216,9 +280,16 @@ class FullcalenderComponent extends Component {
                 <FullCalendar
                     schedulerLicenseKey={'GPL-My-Project-Is-Open-Source'}
                     defaultView="timeGridWeek"
+
+                    customButtons={{
+                        custom: {
+                            text: 'Chọn Ngày',
+                            click: this.onShowCalender
+                        }
+                    }}
                     header={{
-                        right: 'prev,next today',
-                        center: 'title',
+                        right: 'custom prev,next today',
+                        center: 'title ',
                         left: 'dayGridMonth,timeGridWeek,timeGridDay as ,listWeek,resourceTimeGridDay',
                     }}
                     listDayFormat
@@ -258,12 +329,8 @@ class FullcalenderComponent extends Component {
                     eventDrop={
                         this.oneventDrop
                     }
-                    windowResize={
-                        function (view) {
-                            console.log(view);
-
-                        }
-                    }
+                    eventTextColor={'#FEFEF9'}
+                    eventBorderColor={'rgba(0,0,0,1.5)'}
                 />
             </div>
         );

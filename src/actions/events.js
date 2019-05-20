@@ -45,7 +45,7 @@ export function requestGetEvent() {
     }
 }
 // add tour 
-export function requestAddEvents(data) {
+export function requestAddEvents(data) {    
     let formDataObject = {};
     if (data.checkbox === true) {
         let arrayDay = '';

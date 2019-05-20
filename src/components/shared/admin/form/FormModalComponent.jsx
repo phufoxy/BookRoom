@@ -168,51 +168,22 @@ class FormModalComponent extends Component {
             visible: false,
         });
     }
+    onCancel = (e) => {
+        e.preventDefault();
+        this.setState({
+            visible: false
+        })
+
+    }
     render() {
         const contentMain = () => {
             switch (this.props.views) {
-                case 'SEARCH':
-                    return (
-                        <Modal
-                            visible={this.state.visible}
-                            onOk={this.handleOk}
-                            onCancel={this.handleCancel}
-                            footer={null}>
-                            <div className="b-book">
-                                <div className="b-heading">
-                                    <h2 className="b-text-title">
-                                        Tìm Kiếm Phòng Họp
-                                    </h2>
-                                </div>
-                                <div className="b-content">
-                                    <form className="b-form" onSubmit={this.onSubmitSearch}>
-                                        <div className="b-form-group">
-                                            <label style={{ paddingRight: '10px' }}>Chọn Ngày</label>
-                                            <DatePicker onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} />
-                                        </div>
-                                        <div className="b-form-group">
-                                            <label style={{ paddingRight: '10px' }}>Giờ Bắt Đầu</label>
-                                            <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} />,
-                                        </div>
-                                        <div className="b-form-group">
-                                            <label style={{ paddingRight: '10px' }}>Giờ Bắt Kết Thúc</label>
-                                            <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} />,
-                                        </div>
-                                        <div className="b-form-button">
-                                            <button type="cancel" disabled={this.state.formErrors ? true : false} className="b-btn b-btn-cancel  waves-effect waves-teal" onClick={this.onCancel}>Hủy</button>
-                                            <button type="submit" className="b-btn b-btn-save waves-effect waves-teal">Lưu</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </Modal>
-                    )
                 default:
                     return (
                         <Modal
                             visible={this.state.visible}
                             onOk={this.handleOk}
-                            onCancel={this.handleCancel}
+                            closable={false}
                             footer={null}>
                             <div className="b-book">
                                 <div className="b-heading">
@@ -241,7 +212,7 @@ class FormModalComponent extends Component {
                                             <label htmlFor="c">Chọn Phòng</label>
                                             <select className="b-select" value={this.state.rooms} name="rooms" onChange={this.onChanger}>
                                                 {this.props.room.map(data => (
-                                                    <option value={data.id} key={data.id}>{data.title}</option>
+                                                    <option value={data.id} key={data.id}>{data.title} - {data.seats} Chổ Ngồi</option>
                                                 ))}
                                             </select>
                                         </div>

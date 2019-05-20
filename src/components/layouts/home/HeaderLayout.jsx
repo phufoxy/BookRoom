@@ -16,33 +16,41 @@ class HeaderLayout extends Component {
             isRedirect: false
         }
     }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props.isCheck !== prevProps.isCheck) {
+            this.setState({
+                visible: this.props.isCheck
+            })
+        }
+    }
     componentDidMount() {
-        this.props.dispatch(action.requestCheckLogin());
         document.addEventListener('mousedown', this.handleClickOutside);
     }
     componentWillUnmount() {
         document.removeEventListener('mousedown', this.handleClickOutside);
+    }
+    onResetLogin = () => {
+        this.props.onResetCheckLogin();
     }
     showModal = () => {
         this.setState({
             visible: true,
         });
     }
-
     handleOk = (e) => {
         this.setState({
             visible: false,
         });
+        this.onResetLogin();
     }
 
     handleCancel = (e) => {
         this.setState({
             visible: false,
         });
+        this.onResetLogin();
     }
     responseGoogle = (response) => {
-        console.log(response);
-        
         if (response) {
             this.props.dispatch(action.requestGetLogin(response.accessToken))
             cookies.set('accessToken', response.accessToken);

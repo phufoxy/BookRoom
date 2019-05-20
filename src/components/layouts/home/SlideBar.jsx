@@ -4,7 +4,6 @@ import { CalenderComponent } from '../../shared/home';
 import moment from 'moment';
 import 'antd/dist/antd.css';
 import Cookies from 'universal-cookie';
-import { message } from 'antd';
 const cookies = new Cookies();
 var dateFormatDate = require('dateformat');
 const format = 'HH:mm';
@@ -37,7 +36,7 @@ class SlideBar extends Component {
       calender: [],
       title: '',
       dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
-      rooms: 1,
+      rooms: this.props.room.length > 0 ? this.props.room[0].id : 4,
       timestart: '08:30',
       timeend: '09:30',
       checkbox: false,
@@ -90,9 +89,8 @@ class SlideBar extends Component {
   }
   showModal = () => {
     if (cookies.get('data') === undefined) {
-      message.warning('Vui Lòng Đăng Nhập Để Sửa Sự Kiện !')
+      this.props.onCheckLogin();
     } else {
-      this.onReset();
       this.setState({
         visible: true
       })
@@ -145,7 +143,7 @@ class SlideBar extends Component {
     event.preventDefault();
     if (this.props.edit === true) {
       this.props.onUpdate(this.state);
-      this.props.onCancleEdit();      
+      this.props.onCancleEdit();
     } else {
       this.props.onAddEvent(this.state)
     }
@@ -165,13 +163,13 @@ class SlideBar extends Component {
   onGetDate = (data) => {
     this.props.onGetDate(data);
   }
-  onReset() {    
+  onReset() {
     this.setState({
       visible: false,
       calender: [],
       title: '',
       dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
-      rooms: 1,
+      rooms: 4,
       timestart: '08:30',
       timeend: '09:30',
       checkbox: false,
@@ -202,7 +200,6 @@ class SlideBar extends Component {
 
   }
   render() {
-    
     return (
       <div className="b-block-left">
         <div className="b-group-btn">
@@ -213,8 +210,10 @@ class SlideBar extends Component {
         <Modal
           visible={this.state.visible}
           onOk={this.handleOk}
-          onCancel={this.handleCancel}
-          footer={null}>
+          // onCancel={this.handleCancel}
+          footer={null}
+          closable={false}
+        >
           <div className="b-book">
             <div className="b-heading">
               <h2 className="b-text-title">
@@ -224,8 +223,8 @@ class SlideBar extends Component {
             <div className="b-content">
               <form className="b-form" onSubmit={this.onSubmit}>
                 <div className="b-form-group">
-                  <input type="text" placeholder="Nhập Tiêu Đề" name="title" className="b-input" onChange={this.onChanger} value={this.state.title} />
-                  {this.state.formErrors.title ? <span>{this.state.formErrors.title}</span> : <></>}
+                  <input type="text" placeholder="Nhập Tiêu Đề" name="title" className="b-input" onChange={this.onChanger} value={this.state.title} required />
+                  {/* {this.state.formErrors.title ? <span>{this.state.formErrors.title}</span> : <></>} */}
                 </div>
                 <div className="b-form-group">
                   <label style={{ paddingRight: '10px' }}>Chọn Ngày</label>
@@ -241,9 +240,9 @@ class SlideBar extends Component {
                                 </div>
                 <div className="b-form-group">
                   <label htmlFor="c">Chọn Phòng</label>
-                  <select className="b-select" defaultValue={this.state.rooms} name="rooms" onChange={this.onChanger}>
+                  <select className="b-select" value={this.state.rooms} name="rooms" onChange={this.onChanger}>
                     {this.props.room.map(data => (
-                      <option value={data.id} key={data.id}>{data.title}</option>
+                      <option value={data.id} key={data.id}>{data.attributes.name}</option>
                     ))}
 
                   </select>
@@ -296,7 +295,7 @@ class SlideBar extends Component {
                   </div>
                 </div>
                 <div className="b-form-button">
-                  <button type="cancel" disabled={this.state.formErrors ? true : false} className="b-btn b-btn-cancel  waves-effect waves-teal" onClick={this.onCancel}>Hủy</button>
+                  <button type="cancel" className="b-btn b-btn-cancel  waves-effect waves-teal" onClick={this.onCancel}>Hủy</button>
                   <button type="submit" className="b-btn b-btn-save waves-effect waves-teal">Lưu</button>
                 </div>
               </form>
@@ -308,13 +307,19 @@ class SlideBar extends Component {
           <div className="b-heading text-center">
             <h2 className="b-text-title">
               PHÒNG
-                    </h2>
+            </h2>
           </div>
           <div className="b-form" style={{ textAlign: "left" }}>
             <RadioGroup onChange={this.onChangeRadio} value={this.state.value}>
               <Radio style={radioStyle} value={0}>Tất Cả</Radio>
               {this.props.room.map(data => (
-                <Radio style={radioStyle} value={data.id} key={data.id}>{data.title}</Radio>
+                <div className="b-form-group" key={data.id}>
+                  <div className="b-form-check">
+                    <Radio style={radioStyle} value={data.id} >{data.attributes.name}</Radio>
+                  </div>
+                  <div className="b-form-color" style={{ backgroundColor: data.attributes.color }}>
+                  </div>
+                </div>
               ))}
             </RadioGroup>
           </div>

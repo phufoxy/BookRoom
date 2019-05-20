@@ -120,14 +120,21 @@ class CalenderComponent extends Component {
         }
         this.props.onUpdate(data);
     }
+    onCloseModal = () => {
+        this.setState({
+            show: !this.state.show
+        })
+    }
     render() {
+
         return (
             <>
                 <Modal
                     header={null}
                     visible={this.state.show}
                     onOk={this.handleOk}
-                    onCancel={this.handleCancel}
+                    // onCancel={this.handleCancel}
+                    closable={false}
                     footer={null}
                 >
                     <div className="b-events">
@@ -143,8 +150,8 @@ class CalenderComponent extends Component {
                                 </button>
                             </div>
                             <div className="b-item">
-                                <button className="b-btn">
-                                    <i className="fas fa-ellipsis-v"></i>
+                                <button className="b-btn" onClick={this.onCloseModal}>
+                                    <i className="fas fa-times"></i>
                                 </button>
                             </div>
                         </div>
@@ -181,7 +188,7 @@ class CalenderComponent extends Component {
                     height={'parent'}
                     contentHeight={600}
                     timeZone={'local'}
-                    defaultView={"timeGridWeek"}
+                    defaultView={"timeGridDay"}
                     handleWindowResize
                     listDayFormat
                     aspectRatio={1}
@@ -195,6 +202,9 @@ class CalenderComponent extends Component {
                     datesAboveResources
                     ref={this.calendarComponentRef}
                     events={this.props.data}
+                    resources={
+                        this.props.room
+                    }
                     defaultDate={now}
                     navLinks
                     editable

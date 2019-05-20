@@ -36,12 +36,6 @@ class SiderLayout extends Component {
             <div className="left-menu">
                 <ul className="list-menu">
                     {contentUser()}
-                    <li className="item-btn">
-                        <Link className="btn-create" to="/admin/room">
-                            <i className="fas fa-plus" />&nbsp;
-                            <span className="hide-menu">Create New</span>
-                        </Link>
-                    </li>
                     <li className="item-menu ">
                         <NavLink to="/admin" exact={true} activeClassName='active' className="item-link waves-effect waves-dark">
                             <i className="fas fa-database" />

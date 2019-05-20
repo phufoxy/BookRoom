@@ -41,53 +41,61 @@ class TableComponent extends Component {
                 case "ROOM":
                     return (
                         <div className="card-body">
-                        <div className="header-card">
-                            <div>
-                                <h4 className="card-title">Top Selling Products</h4>
+                            <div className="header-card">
+                                <div>
+                                    <h4 className="card-title">Top Selling Products</h4>
+                                </div>
                             </div>
-                        </div>
-                        <div className="add-product">
-                            <button className="btn-add" onClick={this.onChangerView}>ADD</button>
-                        </div>
-                       
-                       
-                 
-                        <div className="table-responsive">
-                            <table className="table">
-                                <thead>
-                                    <tr className="bg-table">
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>Type</th>
-                                        <th>Create_at</th>
-                                        <th>Update_at</th>
-                                        <th>Edit</th>
-                                        <th>Delete</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {this.props.data.map(data => (
+                            <div className="add-product">
+                                <button className="btn-add" onClick={this.onChangerView}>ADD</button>
+                            </div>
+
+
+
+                            <div className="table-responsive">
+                                <table className="table">
+                                    <thead>
+                                        <tr className="bg-table">
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                            <th>Color</th>
+                                            <th>Create_at</th>
+                                            <th>Update_at</th>
+                                            <th>Edit</th>
+                                            <th>Delete</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {this.props.data.map(data => (
                                             <tr key={data.id}>
                                                 <td>{data.id}</td>
                                                 <td>{data.attributes.name}</td>
                                                 <td>{data.attributes.type}</td>
+                                                <td style={{
+                                                    display: 'block',
+                                                    width: '100px',
+                                                    height: '50px',
+                                                    background: data.attributes.color,
+                                                    borderRadius:'4px'
+                                                }}></td>
                                                 <td>{dateFormat(data.attributes.created_at, "dd-mm-yyyy HH:MM:ss")}</td>
                                                 <td>{dateFormat(data.attributes.updated_at, "dd-mm-yyyy HH:MM:ss")}</td>
                                                 <td>
-                                                    <button className="btn_edit" onClick={this.onEdit.bind(this,data.id)}>Edit</button>&nbsp;
-                                                   
+                                                    <button className="btn_edit" onClick={this.onEdit.bind(this, data.id)}>Edit</button>&nbsp;
+
                                                 </td>
                                                 <td>
-                                                <button
+                                                    <button
                                                         className="btn_dele"
                                                         onClick={this.onDelete.bind(this, data.id)}>Delete</button>
                                                 </td>
                                             </tr>
                                         ))}
 
-                                </tbody>
-                            </table>
-                        </div>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     )
                 case "USER":
@@ -99,26 +107,26 @@ class TableComponent extends Component {
                                         <h4 className="card-title">User</h4>
                                     </div>
                                 </div>
-                        
+
                                 <div className="table-responsive">
                                     <table className="table">
                                         <thead>
                                             <tr className="bg-table">
-                                            <th>ID</th>
-                                            <th>Username</th>
-                                            <th>Email Address</th>
-                                            <th>Roles</th>
+                                                <th>ID</th>
+                                                <th>Username</th>
+                                                <th>Email Address</th>
+                                                <th>Roles</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            
+
                                             {
                                                 this.props.data.map(data => (
                                                     <tr key={data.id}>
                                                         <td>{data.id}</td>
                                                         <td >
                                                             <div className="product-name">
-                                                                <img className="link-name" src={data.attributes.img} alt="alt-user"/>
+                                                                <img className="link-name" src={data.attributes.img} alt="alt-user" />
                                                                 <h4 className="b-text">{data.attributes.name}</h4>
                                                             </div>
                                                         </td>
@@ -128,11 +136,11 @@ class TableComponent extends Component {
                                                 ))
                                             }
                                         </tbody>
-                                        </table>
-                                    </div>
+                                    </table>
                                 </div>
-                        <Pagination items={this.props.data} onChangePage={this.onChangePage}></Pagination>
-                     </>
+                            </div>
+                            <Pagination items={this.props.data} onChangePage={this.onChangePage}></Pagination>
+                        </>
                     )
                 default:
                     return (
@@ -143,7 +151,7 @@ class TableComponent extends Component {
         return (
             <div className="add-form">
                 <div className="container-fluid">
-                    
+
                     {contentMain()}
                 </div>
             </div>

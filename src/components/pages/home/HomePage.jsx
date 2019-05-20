@@ -19,11 +19,13 @@ class HomePage extends Component {
             datecalender: '',
             edit: false,
             dataEdit: {},
-            is_edit: false
+            is_edit: false,
+            isLogin: false
         }
     }
     componentDidMount() {
         this.onGetData();
+        this.interval = setInterval(() => (this.onGetData()), 20000);
     }
     onGetData() {
         this.props.dispatch(action.requestGetEvent());
@@ -117,16 +119,17 @@ class HomePage extends Component {
             arrB = arrA.map(item => {
                 let attributes = item.attributes;
                 return {
-                    resourceId: attributes.room_id,
+                    resourceId: attributes.room.id,
                     id: item.id,
                     title: attributes.content,
-                    className: "room_" + attributes.room_id,
+                    className: cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : "",
                     start: attributes.daystart,
-                    room: attributes.room_name,
+                    room: attributes.room.name,
                     user: attributes.username,
                     user_id: attributes.user_id,
                     timestart: attributes.timestart,
                     timeend: attributes.timeend,
+                    color: attributes.room.color,
                     redate: attributes && attributes.repeat !== null ? attributes.repeat.repeatby : 'Không Lặp',
                     reweek: attributes && attributes.repeat !== null ? attributes.repeat.byweekday : '',
                     recount: attributes && attributes.repeat !== null ? attributes.repeat.count : '',
@@ -169,15 +172,25 @@ class HomePage extends Component {
             this.props.dispatch(action.requestGetEventByRoom(data));
         }
     }
+    onCheckLogin = () => {
+        this.setState({
+            isLogin: true
+        })
+    }
+    onResetCheckLogin = () => {
+        this.setState({
+            isLogin: false
+        })
+    }
     render() {
         return (
             <div className="wrapper">
-                <HeaderLayout></HeaderLayout>
+                <HeaderLayout onResetCheckLogin={this.onResetCheckLogin} isCheck={this.state.isLogin}></HeaderLayout>
                 <main className="b-page-main">
                     <div className="b-block">
-                        <SlideBar room={this.convertArrayRoom(this.props.room)} onCancleEdit={this.onCancleEdit} onChangerRoom={this.onChangerRoom} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>
+                        <SlideBar onCheckLogin={this.onCheckLogin} room={this.props.room} onCancleEdit={this.onCancleEdit} onChangerRoom={this.onChangerRoom} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onGetDate={this.onGetDate} onAddEvent={this.onAddEvent}></SlideBar>
                         <div className="b-block-right">
-                            <FullcalenderComponent room={this.convertArrayRoom(this.props.room)} onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
+                            <FullcalenderComponent rooms={this.props.room} room={this.convertArrayRoom(this.props.room)} onCancleEdit={this.onCancleEdit} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} is_checkdate={this.state.is_getdate} datecalender={this.state.datecalender} data={this.convertToFrontEnd(this.props.data)}></FullcalenderComponent>
                         </div>
                     </div>
                 </main>

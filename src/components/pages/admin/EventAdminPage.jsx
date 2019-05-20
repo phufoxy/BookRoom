@@ -5,11 +5,16 @@ import { connect } from 'react-redux';
 import * as action from '../../../actions/events';
 import * as action_Room from '../../../actions/room';
 import Cookies from 'universal-cookie';
-import { message } from 'antd';
+import { message, DatePicker, TimePicker } from 'antd';
 var dateFormatDate = require('dateformat');
 const cookies = new Cookies();
+const format = 'HH:mm';
+const dateFormat = 'YYYY-MM-DD';
 var moment = require('moment');
 var now = new Date()
+function disabledHours() {
+    return [0, 1, 2, 3, 4, 5, 6, 7, 12, 18, 19, 20, 21, 22, 23, 24];
+}
 class EventAdminPage extends Component {
     constructor(props, context) {
         super(props, context);
@@ -17,7 +22,10 @@ class EventAdminPage extends Component {
             visible: false,
             edit: false,
             dataEdit: {},
-            onDate: dateFormatDate(now, 'yyyy-mm-dd')
+            onDate: dateFormatDate(now, 'yyyy-mm-dd'),
+            dateStart: dateFormatDate(now, 'yyyy-mm-dd'),
+            timestart: '08:30',
+            timeend: '09:30',
         }
     }
     componentDidMount() {
@@ -34,16 +42,17 @@ class EventAdminPage extends Component {
             arrB = arrA.map(item => {
                 let attributes = item.attributes;
                 return {
-                    resourceId: attributes.room_id,
+                    resourceId: attributes.room.id,
                     id: item.id,
                     title: attributes.content,
-                    className: "room_" + attributes.room_id,
+                    className: cookies.get('data') !== undefined && parseInt(attributes.user_id) === parseInt(cookies.get('data').id) ? "is-current" : "",
                     start: attributes.daystart,
-                    room: attributes.room_name,
+                    room: attributes.room.name,
                     user: attributes.username,
                     user_id: attributes.user_id,
                     timestart: attributes.timestart,
                     timeend: attributes.timeend,
+                    color: attributes.room.color,
                     redate: attributes && attributes.repeat !== null ? attributes.repeat.repeatby : 'Không Lặp',
                     reweek: attributes && attributes.repeat !== null ? attributes.repeat.byweekday : '',
                     recount: attributes && attributes.repeat !== null ? attributes.repeat.count : '',
@@ -151,29 +160,45 @@ class EventAdminPage extends Component {
             onDate: data
         })
     }
-    onResearch = () => {
-        this.setState({
-            visible: true,
-            edit: false,
-            views: 'SEARCH'
-        })
-    }
-    onSearchEvent = (data) => {
-        this.props.dispatch(action.requestSearchEvent(data));
-        this.setState({
-            isFilter: true,
-            onDate: data.dateStart
-        })
+    onSearchEvent = (event) => {
+        event.preventDefault();
+        this.props.dispatch(action.requestSearchEvent(this.state));
     }
     onResetView = () => {
         this.setState({
             views: 'VIEW'
         })
     }
+    onChangeTime = (time, timeString) => {
+        if (timeString >= this.state.timeend) {
+            this.setState({
+                timestart: timeString,
+                timeend: timeString
+            })
+        } else {
+            this.setState({
+                timestart: timeString,
+                timeend: timeString
+            })
+        }
+    }
+    onChangeTimeItem = (date, dateString) => {
+        this.setState({
+            timeend: dateString
+        })
+    }
+    onChange = (date, dateString) => {
+        this.setState({
+            dateStart: dateString
+        })
+    }
+    onReloadData = ()=>{
+        this.onGetData();
+    }
     render() {
         return (
             <div className="wrapper">
-                <FormModalComponent onSearchEvent={this.onSearchEvent} views={this.state.views} onCheckModal={this.onCheckModal} visible={this.state.visible} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onAddEvent={this.onAddEvent} room={this.convertArrayRoom(this.props.room)}></FormModalComponent>
+                <FormModalComponent views={this.state.views} onCheckModal={this.onCheckModal} visible={this.state.visible} onUpdate={this.onUpdate} dataEdit={this.state.dataEdit} edit={this.state.edit} onAddEvent={this.onAddEvent} room={this.convertArrayRoom(this.props.room)}></FormModalComponent>
                 <HeaderLayout></HeaderLayout>
                 <section className="b-dashboard-content">
                     <SiderLayout></SiderLayout>
@@ -189,9 +214,28 @@ class EventAdminPage extends Component {
                                                     <i className="fas fa-calendar-week" style={{ cursor: 'pointer' }} onClick={this.onCalenderCard}></i> Calender
                                                 </h3>
                                             </div>
+                                            <div className="b-block-center">
+                                                <form className="b-form-filter" onSubmit={this.onSearchEvent}>
+                                                    <div className="b-form-group">
+                                                        <DatePicker onChange={this.onChange} defaultValue={moment(now, dateFormat)} value={moment(this.state.dateStart, dateFormat)} className="b-input" />
+                                                    </div>
+                                                    <div className="b-form-group">
+                                                        <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timestart, format)} format={format} onChange={this.onChangeTime} className="b-input" />
+                                                    </div>
+                                                    <div className="b-form-group">
+                                                        <TimePicker disabledHours={disabledHours} minuteStep={30} defaultValue={moment(this.state.timeend, format)} value={moment(this.state.timeend, format)} format={format} onChange={this.onChangeTimeItem} className="b-input" />
+                                                    </div>
+                                                    <div className="b-form-group">
+                                                        <button type="submit" className="b-btn">
+                                                            <i className="fas fa-search-location" ></i> Tìm Kiếm
+                                                        </button>
+
+                                                    </div>
+                                                </form>
+                                            </div>
                                             <div className="b-block-right">
-                                                <button className="b-btn mr-2" onClick={this.onResearch}>
-                                                    <i className="fas fa-search-location" ></i> Tìm Kiếm
+                                                <button className="b-btn" onClick={this.onReloadData}>
+                                                    <i className="fas fa-plus"></i> Cập Nhật 
                                                 </button>
                                                 <button className="b-btn" onClick={this.onShowModal}>
                                                     <i className="fas fa-plus"></i> Thêm
@@ -200,7 +244,7 @@ class EventAdminPage extends Component {
                                         </div>
                                     </div>
                                     <div className="b-content-main">
-                                        <CalenderComponent isFilter={this.state.isFilter} onDate={this.state.onDate} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} data={this.convertToFrontEnd(this.props.data)}></CalenderComponent>
+                                        <CalenderComponent room={this.convertArrayRoom(this.props.room)} onDate={this.state.onDate} onUpdate={this.onUpdate} onEdit={this.onEdit} onDelete={this.onDelete} data={this.convertToFrontEnd(this.props.data)}></CalenderComponent>
                                     </div>
                                 </div>
 

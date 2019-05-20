@@ -99,3 +99,16 @@
     }
   }
 }
+.is-current {
+  position: relative;
+  border: 1.5px dashed rgba(0, 0, 0, 1) !important;
+  &::after {
+    position: absolute;
+    content: "me";
+    right: -10px;
+    top: -10px;
+    background-color: #3384e2;
+    border-radius: 4px;
+    padding: 2px 4px;
+  }
+}
